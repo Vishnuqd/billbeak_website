@@ -60,6 +60,7 @@
 56. initProductDetails
 57. initShopCart
 58. text-scramble
+62. Billbeak Method pinned stage stack
 ****************************************************
 ****************************************************/
 
@@ -3619,4 +3620,341 @@
     }
 
     initSec1Home15TitleMeta();
+
+    ////////////////////////////////////////////////////
+    // 62. Billbeak Method — pinned stage stack (at-method-stack)
+    // Bespoke choreography: content reveals are driven by the master
+    // pin timeline (independent scroll-triggered reveals can't fire
+    // correctly inside a pinned section).
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        function initBillbeakMethod() {
+            const stack = document.querySelector('.at-method-stack');
+            if (!stack) return;
+            const items = gsap.utils.toArray('.at-method-item', stack);
+            if (!items.length) return;
+
+            if (typeof SplitText !== 'undefined') gsap.registerPlugin(SplitText);
+
+            const nav = stack.querySelector('.at-method-nav');
+            const navItems = nav ? gsap.utils.toArray('.at-method-nav-item', nav) : [];
+            const navFills = navItems.map((b) => b.querySelector('.at-method-nav-fill'));
+
+            const parts = items.map((item) => {
+                const desc = item.querySelector('.at-method-desc');
+                let descLines = [];
+                if (desc) {
+                    if (typeof SplitText !== 'undefined') {
+                        try {
+                            const split = new SplitText(desc, { type: 'lines', linesClass: 'at-method-line' });
+                            descLines = split.lines || [];
+                        } catch (e) {
+                            descLines = [];
+                        }
+                    }
+                    if (!descLines.length) descLines = [desc];
+                }
+                return {
+                    item,
+                    title: item.querySelector('.at-method-title'),
+                    letters: item.querySelectorAll('.at-method-title .at-letter-span'),
+                    kickerLine: item.querySelector('.at-method-kicker-line'),
+                    kickerText: item.querySelector('.at-method-kicker-text'),
+                    descLines,
+                    tags: item.querySelectorAll('.at-method-tags li'),
+                    card: item.querySelector('.at-method-instrument'),
+                    ghost: item.querySelector('.at-method-ghost'),
+                };
+            });
+
+            function hideContent(p) {
+                if (p.kickerLine) gsap.set(p.kickerLine, { scaleX: 0 });
+                if (p.kickerText) gsap.set(p.kickerText, { y: 14, opacity: 0 });
+                if (p.letters.length) gsap.set(p.letters, { y: '0.55em', opacity: 0 });
+                else if (p.title) gsap.set(p.title, { y: 40, opacity: 0 });
+                if (p.descLines.length) gsap.set(p.descLines, { y: 34, opacity: 0 });
+                if (p.tags.length) gsap.set(p.tags, { y: 18, opacity: 0 });
+                if (p.card) gsap.set(p.card, { y: 70, rotate: 2.5, opacity: 0 });
+                if (p.ghost) gsap.set(p.ghost, { yPercent: 18, opacity: 0 });
+            }
+
+            function buildContentTl(p) {
+                const t = gsap.timeline({ defaults: { ease: 'power3.out' } });
+                if (p.kickerLine) t.to(p.kickerLine, { scaleX: 1, duration: 0.4 }, 0);
+                if (p.kickerText) t.to(p.kickerText, { y: 0, opacity: 1, duration: 0.4 }, 0.06);
+                if (p.letters.length) t.to(p.letters, { y: 0, opacity: 1, duration: 0.6, stagger: 0.03 }, 0.1);
+                else if (p.title) t.to(p.title, { y: 0, opacity: 1, duration: 0.6 }, 0.1);
+                if (p.descLines.length) t.to(p.descLines, { y: 0, opacity: 1, duration: 0.5, stagger: 0.09 }, 0.32);
+                if (p.tags.length) t.to(p.tags, { y: 0, opacity: 1, duration: 0.45, stagger: 0.06 }, 0.5);
+                if (p.card) t.to(p.card, { y: 0, rotate: 0, opacity: 1, duration: 0.65 }, 0.38);
+                if (p.ghost) t.to(p.ghost, { yPercent: 0, opacity: 1, duration: 0.7 }, 0.15);
+                return t;
+            }
+
+            // Initial states
+            items.forEach((item, i) => {
+                gsap.set(item, { zIndex: i + 1 });
+                if (i !== 0) gsap.set(item, { yPercent: 100 });
+            });
+            parts.forEach(hideContent);
+            if (nav) gsap.set(nav, { autoAlpha: 0, y: 24 });
+
+            // Panel 1 entrance — plays once while the section scrolls into
+            // view (before the pin engages), so it can use its own trigger.
+            const intro = gsap.timeline({
+                scrollTrigger: { trigger: stack, start: 'top 75%', once: true },
+                defaults: { ease: 'power3.out' },
+            });
+            intro.add(buildContentTl(parts[0]));
+            if (nav) intro.to(nav, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.5);
+
+            let masterTl = null;
+            let navBounds = null;
+
+            function updateNav(progress) {
+                if (!masterTl || !navItems.length) return;
+                const dur = masterTl.duration();
+                if (!navBounds) {
+                    const labels = masterTl.labels;
+                    const starts = [0];
+                    for (let i = 1; i < navItems.length; i++) {
+                        starts.push(typeof labels['slide' + i] !== 'undefined' ? labels['slide' + i] : dur);
+                    }
+                    navBounds = starts.map((s, i) => [s, i + 1 < starts.length ? starts[i + 1] : dur]);
+                }
+                const t = progress * dur;
+                let active = 0;
+                navBounds.forEach((b, i) => {
+                    const f = Math.max(0, Math.min(1, (t - b[0]) / Math.max(b[1] - b[0], 0.0001)));
+                    if (navFills[i]) gsap.set(navFills[i], { scaleX: f });
+                    if (t >= b[0]) active = i;
+                });
+                navItems.forEach((btn, i) => btn.classList.toggle('is-active', i === active));
+            }
+
+            masterTl = gsap.timeline({
+                defaults: { ease: 'none' },
+                scrollTrigger: {
+                    trigger: stack,
+                    pin: true,
+                    start: 'top top',
+                    end: () => '+=' + (items.length * 2 - 1) * 60 + '%',
+                    scrub: 1,
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true,
+                    onUpdate: (self) => updateNav(self.progress),
+                },
+            });
+
+            masterTl.to({}, { duration: 0.5 }); // dwell on stage 1
+            parts.forEach((p, i) => {
+                const next = parts[i + 1];
+                if (!next) return;
+                masterTl.addLabel('slide' + (i + 1));
+                masterTl.to(p.item, { scale: 0.93, yPercent: -4, duration: 1 });
+                if (p.ghost) masterTl.to(p.ghost, { yPercent: -20, opacity: 0.4, duration: 1 }, '<');
+                masterTl.to(next.item, { yPercent: 0, duration: 1 }, '<');
+                masterTl.add(buildContentTl(next), '-=0.4');
+                masterTl.addLabel('stage' + (i + 1));
+                masterTl.to({}, { duration: 0.5 }); // dwell to read
+            });
+            masterTl.to({}, { duration: 0.3 });
+
+            // Stage nav — click to travel to a stage
+            navItems.forEach((btn, i) => {
+                btn.addEventListener('click', () => {
+                    const st = masterTl && masterTl.scrollTrigger;
+                    if (!st) return;
+                    const time = i === 0 ? 0.001 : masterTl.labels['stage' + i];
+                    if (typeof time === 'undefined') return;
+                    const y = st.start + (time / masterTl.duration()) * (st.end - st.start);
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                });
+            });
+
+            // Instrument card — 3D tilt + magnetic arrow (pointer devices only)
+            if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                parts.forEach((p) => {
+                    const card = p.card;
+                    if (!card) return;
+                    const arrow = card.querySelector('.at-method-instrument-arrow');
+                    card.addEventListener('mousemove', (e) => {
+                        const r = card.getBoundingClientRect();
+                        const dx = (e.clientX - r.left) / r.width - 0.5;
+                        const dy = (e.clientY - r.top) / r.height - 0.5;
+                        gsap.to(card, { rotationY: dx * 8, rotationX: -dy * 8, transformPerspective: 900, duration: 0.5, ease: 'power2.out' });
+                        if (arrow) gsap.to(arrow, { x: dx * 16, y: dy * 16, duration: 0.4, ease: 'power2.out' });
+                    });
+                    card.addEventListener('mouseleave', () => {
+                        gsap.to(card, { rotationX: 0, rotationY: 0, duration: 0.7, ease: 'power3.out' });
+                        if (arrow) gsap.to(arrow, { x: 0, y: 0, duration: 0.5, ease: 'power3.out' });
+                    });
+                });
+            }
+        }
+
+        if (document.readyState === 'complete') {
+            initBillbeakMethod();
+        } else {
+            window.addEventListener('load', initBillbeakMethod);
+        }
+    }
+
+    ////////////////////////////////////////////////////
+    // 63. Billbeak Trust — What we promise (and what we don't)
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        function initBillbeakTrust() {
+            const area = document.querySelector('.at-trust-area');
+            if (!area) return;
+
+            // Ambient orbs — slow drift
+            const orb1 = area.querySelector('.at-trust-orb-1');
+            const orb2 = area.querySelector('.at-trust-orb-2');
+            if (orb1) gsap.to(orb1, { x: -60, y: 80, duration: 14, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+            if (orb2) gsap.to(orb2, { x: 70, y: -60, duration: 17, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+
+            // Header entrance
+            const kicker = area.querySelector('.at-trust-kicker');
+            const title = area.querySelector('.at-trust-title');
+            if (title) {
+                const headTl = gsap.timeline({
+                    scrollTrigger: { trigger: title, start: 'top 85%', once: true },
+                    defaults: { ease: 'power3.out' },
+                });
+                if (kicker) headTl.fromTo(kicker, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 });
+                headTl.fromTo(title, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9 }, 0.12);
+            }
+
+            // Flip cards — entrance + tap/keyboard flip (hover flips via CSS)
+            const flips = gsap.utils.toArray('.at-trust-flip', area);
+            const strip = area.querySelector('.at-trust-strip');
+            if (flips.length) {
+                const flipTl = gsap.timeline({
+                    scrollTrigger: { trigger: flips[0], start: 'top 85%', once: true },
+                    defaults: { ease: 'power3.out' },
+                });
+                if (strip) flipTl.fromTo(strip, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 });
+                flipTl.fromTo(flips, { y: 70, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, stagger: 0.12 }, 0.1);
+
+                const hoverable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+                flips.forEach((flip) => {
+                    flip.addEventListener('click', () => {
+                        if (!hoverable) flip.classList.toggle('is-flipped');
+                    });
+                    flip.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            flip.classList.toggle('is-flipped');
+                        }
+                    });
+                });
+            }
+
+            // Commitments — draggable card rail with counter + progress
+            const rail = area.querySelector('.at-trust-rail');
+            const commitHead = area.querySelector('.at-trust-commit-head');
+            const ghost = area.querySelector('.at-trust-ghost');
+            if (commitHead) {
+                gsap.fromTo(commitHead, { y: 30, opacity: 0 }, {
+                    y: 0, opacity: 1, duration: 0.7, ease: 'power3.out',
+                    scrollTrigger: { trigger: commitHead, start: 'top 88%', once: true },
+                });
+            }
+            if (ghost) {
+                gsap.fromTo(ghost, { yPercent: 25, opacity: 0 }, {
+                    yPercent: 0, opacity: 1, duration: 1.1, ease: 'power3.out',
+                    scrollTrigger: { trigger: rail || ghost, start: 'top 90%', once: true },
+                });
+            }
+            if (rail) {
+                const wrapper = rail.querySelector('.swiper-wrapper');
+                const slides = gsap.utils.toArray('.at-trust-slide', wrapper);
+                gsap.fromTo(slides, { x: 90, opacity: 0 }, {
+                    x: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.08,
+                    scrollTrigger: { trigger: rail, start: 'top 85%', once: true },
+                });
+                if (wrapper && slides.length) {
+                    const counterCur = area.querySelector('.at-trust-counter-cur');
+                    const fill = area.querySelector('.at-trust-rail-progress-fill');
+                    const setCount = slides.length;
+
+                    // Clone the set twice so the loop never shows a gap
+                    for (let c = 0; c < 2; c++) {
+                        slides.forEach((s) => {
+                            const clone = s.cloneNode(true);
+                            clone.setAttribute('aria-hidden', 'true');
+                            wrapper.appendChild(clone);
+                        });
+                    }
+
+                    const setWidth = () => {
+                        let w = 0;
+                        for (let i = 0; i < setCount; i++) {
+                            const el = wrapper.children[i];
+                            w += el.getBoundingClientRect().width + parseFloat(getComputedStyle(el).marginRight || 0);
+                        }
+                        return w;
+                    };
+
+                    const SPEED = 70; // px per second
+                    let marquee = null;
+                    let hovered = false;
+
+                    const buildMarquee = () => {
+                        const w = setWidth();
+                        if (!w) return;
+                        if (marquee) marquee.kill();
+                        gsap.set(wrapper, { x: 0 });
+                        marquee = gsap.to(wrapper, {
+                            x: -w,
+                            duration: w / SPEED,
+                            ease: 'none',
+                            repeat: -1,
+                            onUpdate: () => {
+                                const p = marquee.progress();
+                                if (counterCur) counterCur.textContent = String((Math.floor(p * setCount) % setCount) + 1).padStart(2, '0');
+                                if (fill) gsap.set(fill, { scaleX: Math.max(p, 0.02) });
+                            },
+                        });
+                        if (hovered) marquee.timeScale(0);
+                    };
+                    buildMarquee();
+
+                    let resizeTimer;
+                    window.addEventListener('resize', () => {
+                        clearTimeout(resizeTimer);
+                        resizeTimer = setTimeout(buildMarquee, 200);
+                    });
+
+                    // Smooth stop on hover / touch, smooth resume on leave
+                    const pauseMarquee = () => {
+                        hovered = true;
+                        if (marquee) gsap.to(marquee, { timeScale: 0, duration: 0.5, ease: 'power2.out', overwrite: true });
+                    };
+                    const resumeMarquee = () => {
+                        hovered = false;
+                        if (marquee) gsap.to(marquee, { timeScale: 1, duration: 0.7, ease: 'power2.out', overwrite: true });
+                    };
+                    rail.addEventListener('mouseenter', pauseMarquee);
+                    rail.addEventListener('mouseleave', resumeMarquee);
+                    rail.addEventListener('touchstart', pauseMarquee, { passive: true });
+                    rail.addEventListener('touchend', resumeMarquee);
+                }
+            }
+
+            // Truth Sheet entrance (chip tickers run via carouselTicker)
+            const sheet = area.querySelector('.at-trust-sheet');
+            if (sheet) {
+                gsap.fromTo(sheet, { y: 60, opacity: 0 }, {
+                    y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
+                    scrollTrigger: { trigger: sheet, start: 'top 88%', once: true },
+                });
+            }
+        }
+
+        if (document.readyState === 'complete') {
+            initBillbeakTrust();
+        } else {
+            window.addEventListener('load', initBillbeakTrust);
+        }
+    }
 })(jQuery);
