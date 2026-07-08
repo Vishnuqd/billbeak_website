@@ -61,6 +61,7 @@
 57. initShopCart
 58. text-scramble
 62. Billbeak Method pinned stage stack
+64. What-we-do sub-service panels
 ****************************************************
 ****************************************************/
 
@@ -3955,6 +3956,40 @@
             initBillbeakTrust();
         } else {
             window.addEventListener('load', initBillbeakTrust);
+        }
+    }
+
+    ////////////////////////////////////////////////////
+    // 64. What-we-do — sub-service panels swap with service hover
+    if (typeof gsap !== 'undefined') {
+        function initSubservicePanels() {
+            const area = document.querySelector('.at-panel-pin-area');
+            if (!area) return;
+            const items = area.querySelectorAll('.service-item');
+            const panels = area.querySelectorAll('.at-subservice-panel');
+            if (!items.length || !panels.length) return;
+
+            let current = 0; // panel 0 is .is-active in markup
+            function activate(index) {
+                if (index === current || !panels[index]) return;
+                current = index;
+                panels.forEach((panel, i) => panel.classList.toggle('is-active', i === index));
+                const panel = panels[index];
+                const head = panel.querySelectorAll('.at-subservice-eyebrow, .at-subservice-title');
+                const rows = panel.querySelectorAll('.at-subservice-item, .at-subservice-cta');
+                gsap.fromTo(head, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', stagger: 0.06, overwrite: true });
+                gsap.fromTo(rows, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out', stagger: 0.07, delay: 0.08, overwrite: true });
+            }
+
+            items.forEach((item, index) => {
+                item.addEventListener('mouseenter', () => activate(index));
+            });
+        }
+
+        if (document.readyState === 'complete') {
+            initSubservicePanels();
+        } else {
+            window.addEventListener('load', initSubservicePanels);
         }
     }
 })(jQuery);
