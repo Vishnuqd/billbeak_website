@@ -11126,11 +11126,13 @@ input.footer-15__form-input:focus {
 }
 .at-method-item {
   position: relative;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: clamp(560px, 82vh, 840px);
   width: 100%;
   display: flex;
   align-items: center;
+  border-radius: 20px;
+  background-color: var(--at-neutral-50);
+  overflow: hidden;
   will-change: transform;
 }
 .at-method-item:not(:first-child) {
@@ -11139,12 +11141,13 @@ input.footer-15__form-input:focus {
   left: 0;
   right: 0;
   height: 100%;
+  box-shadow: 0 -24px 60px -30px rgba(15, 15, 15, 0.28);
 }
 .at-method-panel {
   position: relative;
   width: 100%;
-  padding-top: clamp(48px, 7vh, 90px);
-  padding-bottom: clamp(96px, 14vh, 150px);
+  padding-top: clamp(40px, 5vh, 68px);
+  padding-bottom: clamp(72px, 9vh, 108px);
 }
 .at-method-row {
   position: relative;
@@ -11330,6 +11333,44 @@ input.footer-15__form-input:focus {
   transform: scaleX(0);
   transform-origin: left center;
 }
+.at-method-cue {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: clamp(84px, 13vh, 130px);
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+.at-method-cue-text {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--at-neutral-300);
+}
+.at-method-cue-track {
+  position: relative;
+  width: 1px;
+  height: 34px;
+  background-color: var(--at-neutral-200);
+  overflow: hidden;
+}
+.at-method-cue-dot {
+  position: absolute;
+  top: -8px;
+  left: -0.5px;
+  width: 2px;
+  height: 8px;
+  background-color: var(--at-neutral-950);
+  animation: at-method-cue-drop 1.7s cubic-bezier(0.45, 0, 0.45, 1) infinite;
+}
+@keyframes at-method-cue-drop {
+  0% { transform: translateY(0); }
+  75%, 100% { transform: translateY(44px); }
+}
 @media (max-width: 991px) {
   .at-method-panel {
     padding-bottom: clamp(110px, 16vh, 150px);
@@ -11348,6 +11389,9 @@ input.footer-15__form-input:focus {
   }
   .at-method-nav-head {
     margin-bottom: 8px;
+  }
+  .at-method-cue {
+    display: none;
   }
 }
 

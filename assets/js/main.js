@@ -3705,8 +3705,12 @@
                 scrollTrigger: { trigger: stack, start: 'top 75%', once: true },
                 defaults: { ease: 'power3.out' },
             });
+            const cue = stack.querySelector('.at-method-cue');
+            if (cue) gsap.set(cue, { autoAlpha: 0 });
+
             intro.add(buildContentTl(parts[0]));
             if (nav) intro.to(nav, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.5);
+            if (cue) intro.to(cue, { autoAlpha: 1, duration: 0.6 }, 0.65);
 
             let masterTl = null;
             let navBounds = null;
@@ -3732,21 +3736,54 @@
                 navItems.forEach((btn, i) => btn.classList.toggle('is-active', i === active));
             }
 
+            // Content reveals are time-based, fired once per stage as its sheet
+            // slides in — never scrubbed, so pausing mid-scroll can't park the
+            // panel in a half-faded state.
+            const stagePlayed = parts.map((_, i) => i === 0);
+            function updateStages(progress) {
+                if (!masterTl) return;
+                const t = progress * masterTl.duration();
+                for (let i = 1; i < parts.length; i++) {
+                    if (stagePlayed[i]) continue;
+                    const slideStart = masterTl.labels['slide' + i];
+                    if (typeof slideStart === 'undefined') continue;
+                    if (t >= slideStart + 0.22) {
+                        stagePlayed[i] = true;
+                        buildContentTl(parts[i]);
+                    }
+                }
+            }
+
+            // Scroll cue — visible while there are stages left, gone near the end
+            let cueHidden = false;
+            function updateCue(progress) {
+                if (!cue) return;
+                const shouldHide = progress > 0.82;
+                if (shouldHide !== cueHidden) {
+                    cueHidden = shouldHide;
+                    gsap.to(cue, { autoAlpha: shouldHide ? 0 : 1, duration: 0.4, ease: 'power2.out', overwrite: true });
+                }
+            }
+
             masterTl = gsap.timeline({
                 defaults: { ease: 'none' },
                 scrollTrigger: {
                     trigger: stack,
                     pin: true,
                     start: 'top top',
-                    end: () => '+=' + (items.length * 2 - 1) * 60 + '%',
+                    end: () => '+=' + items.length * 75 + '%',
                     scrub: 1,
                     anticipatePin: 1,
                     invalidateOnRefresh: true,
-                    onUpdate: (self) => updateNav(self.progress),
+                    onUpdate: (self) => {
+                        updateNav(self.progress);
+                        updateStages(self.progress);
+                        updateCue(self.progress);
+                    },
                 },
             });
 
-            masterTl.to({}, { duration: 0.5 }); // dwell on stage 1
+            masterTl.to({}, { duration: 0.22 }); // brief settle on stage 1
             parts.forEach((p, i) => {
                 const next = parts[i + 1];
                 if (!next) return;
@@ -3754,11 +3791,10 @@
                 masterTl.to(p.item, { scale: 0.93, yPercent: -4, duration: 1 });
                 if (p.ghost) masterTl.to(p.ghost, { yPercent: -20, opacity: 0.4, duration: 1 }, '<');
                 masterTl.to(next.item, { yPercent: 0, duration: 1 }, '<');
-                masterTl.add(buildContentTl(next), '-=0.4');
                 masterTl.addLabel('stage' + (i + 1));
-                masterTl.to({}, { duration: 0.5 }); // dwell to read
+                masterTl.to({}, { duration: 0.2 });
             });
-            masterTl.to({}, { duration: 0.3 });
+            masterTl.to({}, { duration: 0.15 });
 
             // Stage nav — click to travel to a stage
             navItems.forEach((btn, i) => {
@@ -3868,40 +3904,43 @@
             }
             if (rail) {
                 const wrapper = rail.querySelector('.swiper-wrapper');
-                const slides = gsap.utils.toArray('.at-trust-slide', wrapper);
-                gsap.fromTo(slides, { x: 90, opacity: 0 }, {
-                    x: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.08,
-                    scrollTrigger: { trigger: rail, start: 'top 85%', once: true },
-                });
-                if (wrapper && slides.length) {
+                const originals = gsap.utils.toArray('.at-trust-slide', wrapper);
+                if (wrapper && originals.length) {
                     const counterCur = area.querySelector('.at-trust-counter-cur');
                     const fill = area.querySelector('.at-trust-rail-progress-fill');
-                    const setCount = slides.length;
+                    const setCount = originals.length;
 
-                    // Clone the set twice so the loop never shows a gap
-                    for (let c = 0; c < 2; c++) {
-                        slides.forEach((s) => {
+                    const measureSet = () => {
+                        let w = 0;
+                        for (let i = 0; i < setCount; i++) {
+                            const el = originals[i];
+                            w += el.getBoundingClientRect().width + parseFloat(getComputedStyle(el).marginRight || 0);
+                        }
+                        return w;
+                    };
+
+                    // Clone pristine copies BEFORE any opacity/transform is set on
+                    // the originals — otherwise clones inherit the entrance's
+                    // opacity:0 and vanish, leaving a gap after the last real card.
+                    // Enough full sets that content always exceeds the viewport by
+                    // one set, so the loop never opens a gap even on ultra-wide.
+                    const oneSet = measureSet();
+                    const coverW = Math.max(window.innerWidth, rail.getBoundingClientRect().width);
+                    const cloneSets = oneSet ? Math.max(2, Math.ceil(coverW / oneSet) + 1) : 2;
+                    for (let c = 0; c < cloneSets; c++) {
+                        originals.forEach((s) => {
                             const clone = s.cloneNode(true);
                             clone.setAttribute('aria-hidden', 'true');
                             wrapper.appendChild(clone);
                         });
                     }
 
-                    const setWidth = () => {
-                        let w = 0;
-                        for (let i = 0; i < setCount; i++) {
-                            const el = wrapper.children[i];
-                            w += el.getBoundingClientRect().width + parseFloat(getComputedStyle(el).marginRight || 0);
-                        }
-                        return w;
-                    };
-
                     const SPEED = 70; // px per second
                     let marquee = null;
                     let hovered = false;
 
                     const buildMarquee = () => {
-                        const w = setWidth();
+                        const w = measureSet();
                         if (!w) return;
                         if (marquee) marquee.kill();
                         gsap.set(wrapper, { x: 0 });
@@ -3919,6 +3958,13 @@
                         if (hovered) marquee.timeScale(0);
                     };
                     buildMarquee();
+
+                    // Subtle entrance on the whole rail — never per-slide, which
+                    // would re-introduce the opacity:0 clone problem.
+                    gsap.fromTo(rail, { opacity: 0, y: 40 }, {
+                        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+                        scrollTrigger: { trigger: rail, start: 'top 88%', once: true },
+                    });
 
                     let resizeTimer;
                     window.addEventListener('resize', () => {
