@@ -4038,4 +4038,51 @@
             window.addEventListener('load', initSubservicePanels);
         }
     }
+
+    ////////////////////////////////////////////////////
+    // 65. Hero founder credential — count-up numeral (fires once in view)
+    if (typeof gsap !== 'undefined') {
+        function initFounderCredential() {
+            var num = document.querySelector('.at-founder-credential-num');
+            if (!num) return;
+            var target = parseInt(num.getAttribute('data-count'), 10) || 0;
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                num.textContent = target;
+                return;
+            }
+            var fired = false;
+            function runCount() {
+                if (fired) return;
+                fired = true;
+                var counter = { val: 0 };
+                gsap.to(counter, {
+                    val: target,
+                    duration: 1.4,
+                    ease: 'power2.out',
+                    onUpdate: function () {
+                        num.textContent = Math.round(counter.val);
+                    },
+                });
+            }
+            if ('IntersectionObserver' in window) {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            runCount();
+                            io.disconnect();
+                        }
+                    });
+                }, { threshold: 0.4 });
+                io.observe(num);
+            } else {
+                runCount();
+            }
+        }
+
+        if (document.readyState === 'complete') {
+            initFounderCredential();
+        } else {
+            window.addEventListener('load', initFounderCredential);
+        }
+    }
 })(jQuery);
