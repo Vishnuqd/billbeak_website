@@ -1,0 +1,96 @@
+/*
+ * Design tokens. Dark-first: :root carries the dark palette; [data-theme="light"]
+ * overrides. The page is meant to disappear — near-monochrome, one restrained
+ * accent, generous space, large type. No gradients, no glass, minimal shadow.
+ */
+
+:root,
+:root[data-theme="dark"] {
+  --bg: #0a0a0b;
+  --bg-elevated: #101012;
+  --surface: #141416;
+  --surface-hover: #1a1a1d;
+  --surface-active: #202024;
+
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-focus: rgba(255, 255, 255, 0.85);
+
+  --text: #f4f4f2;
+  --text-dim: rgba(244, 244, 242, 0.6);
+  --text-faint: rgba(244, 244, 242, 0.36);
+
+  --accent: #f4f4f2; /* editorial: the accent is near-white ink */
+  --accent-ink: #0a0a0b; /* text on the accent fill */
+  --danger: #ff6b6b;
+  --success: #7ee0a8;
+
+  --overlay: rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="light"] {
+  --bg: #faf9f7;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #f4f3f0;
+  --surface-active: #ecebe7;
+
+  --border: rgba(0, 0, 0, 0.1);
+  --border-strong: rgba(0, 0, 0, 0.18);
+  --border-focus: rgba(0, 0, 0, 0.8);
+
+  --text: #17171a;
+  --text-dim: rgba(23, 23, 26, 0.62);
+  --text-faint: rgba(23, 23, 26, 0.4);
+
+  --accent: #17171a;
+  --accent-ink: #ffffff;
+  --danger: #d23b3b;
+  --success: #1f8f57;
+
+  --overlay: rgba(20, 20, 20, 0.35);
+}
+
+:root {
+  /* Type */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter",
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, monospace;
+
+  --text-question: clamp(1.55rem, 1rem + 2.4vw, 2.35rem);
+  --text-lead: clamp(1.05rem, 1rem + 0.4vw, 1.2rem);
+  --text-body: 1.0625rem;
+  --text-small: 0.875rem;
+  --text-tiny: 0.75rem;
+
+  --leading-tight: 1.15;
+  --leading-normal: 1.5;
+
+  /* Space scale (8pt-ish) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --measure: 680px; /* max content width */
+
+  /* Motion */
+  --dur-fast: 150ms;
+  --dur: 250ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Shadow — used sparingly */
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.18);
+}

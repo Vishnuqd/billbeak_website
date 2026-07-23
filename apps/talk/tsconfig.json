@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    // noUnusedLocals/noUnusedParameters are intentionally OFF. In dev the engine
+    // is consumed from source via a path alias, so tsc follows into its .ts files;
+    // in production it is a built package and tsc would only see its .d.ts
+    // (skipped by skipLibCheck). We don't lint a dependency's internals.
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@billbeak/conversation-engine": ["../../packages/conversation-engine/src/index.ts"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

@@ -40082,6 +40082,46 @@ body.at-magic-cursor #magic-cursor {
     transform: none;
   }
 }
+/*----------------------------------------*/
+/*  at-accent-serif — inline editorial highlight
+/*----------------------------------------*/
+.at-accent-serif {
+  position: relative;
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.32em;
+  letter-spacing: -0.005em;
+  color: #FDEEE3;
+  padding: 0 0.04em;
+  white-space: nowrap;
+  text-shadow: 0 2px 22px rgba(255, 216, 184, 0.35);
+}
+.at-accent-serif::after {
+  content: "";
+  position: absolute;
+  left: 0.04em;
+  right: 0.04em;
+  bottom: 0.02em;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.85), rgba(255, 216, 184, 0.35));
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: at-accent-serif-underline 0.9s cubic-bezier(0.22, 0.9, 0.28, 1) forwards;
+  animation-delay: 0.6s;
+}
+@keyframes at-accent-serif-underline {
+  to {
+    transform: scaleX(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .at-accent-serif::after {
+    animation: none;
+    transform: scaleX(1);
+  }
+}
 
 /*----------------------------------------*/
 /*  at-hero-fx — interactive mesh / keywords / light

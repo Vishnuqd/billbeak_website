@@ -23,9 +23,10 @@
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/ethereal.css">
 </head>
 
-<body class="at-magic-cursor">
+<body class="at-magic-cursor bb-ethereal bb-ethereal-a">
     <!-- prettier-ignore -->
 
     <!--search-form-start -->
@@ -431,146 +432,42 @@
             <main class="bg-neutral-0">
                 <!-- prettier-ignore -->
                 <!-- at-hero-area-start -->
-                <div class="at-hero-area hero-dark-blue scene p-relative z-index-1 bg-position fix at-hero-spacing" data-bg-color="#EA440C">
-                    <div class="at-hero-bg at_fade_anim" data-speed=".8" data-delay=".4" data-fade-from="bottom" data-ease="bounce">
-                        <img class="layer" data-depth="0.8" src="assets/custom/hero2.png" alt="Billbeak — talent for the new era">
-                    </div>
-                    <div class="at-hero-fx" aria-hidden="true">
-                        <canvas class="at-hero-fx__canvas"></canvas>
-                        <div class="at-hero-fx__light"></div>
-                        <div class="at-hero-fx__keywords">
-                            <span class="at-hero-fx__word-label">The journey</span>
-                            <span class="at-hero-fx__word">Discover</span>
-                        </div>
-                        <div class="at-hero-fx__grain"></div>
+                <div class="at-hero-area bb-eth-hero scene p-relative z-index-1 at-hero-spacing">
+                    <div class="bb-eth-bg">
+                        <img class="bb-eth-img layer" data-depth="0.30" src="assets/custom/hero2.png" alt="Billbeak — talent for the new era">
+                        <span class="bb-eth-smear" aria-hidden="true"></span>
+                        <span class="bb-eth-veil" aria-hidden="true"></span>
+                        <span class="bb-eth-bloom layer" data-depth="0.12" aria-hidden="true"></span>
+                        <span class="bb-eth-fog" aria-hidden="true"></span>
+                        <span class="bb-eth-grain" aria-hidden="true"></span>
                     </div>
                     <div class="container p-relative">
-                        <div class="p-absolute bottom-100 start-0 ms-5 mb-100 d-none d-lg-block">
-                            <a href="mailto:hello@billbeak.com" class="at-hero-button at-btn bg-transparent p-relative">
-                                <img src="assets/imgs/icons/badge-1.svg" alt="Let’s talk with Billbeak">
-                                <span class="position-absolute top-50 start-50 translate-middle d-flex flex-column align-items-center justify-content-center">
-                                    <i class="text-white">
-                                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M0.21967 9.40717C-0.0732232 9.70006 -0.0732232 10.1749 0.21967 10.4678C0.512563 10.7607 0.987437 10.7607 1.28033 10.4678L0.21967 9.40717ZM10.6875 0.75C10.6875 0.335786 10.3517 2.97145e-09 9.9375 1.50485e-07L3.1875 -2.70983e-07C2.77329 -2.70983e-07 2.4375 0.335786 2.4375 0.75C2.4375 1.16421 2.77329 1.5 3.1875 1.5H9.1875V7.5C9.1875 7.91421 9.52329 8.25 9.9375 8.25C10.3517 8.25 10.6875 7.91421 10.6875 7.5L10.6875 0.75ZM0.75 9.9375L1.28033 10.4678L10.4678 1.28033L9.9375 0.75L9.40717 0.21967L0.21967 9.40717L0.75 9.9375Z" fill="currentColor" />
-                                        </svg>
-                                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M0.21967 9.40717C-0.0732232 9.70006 -0.0732232 10.1749 0.21967 10.4678C0.512563 10.7607 0.987437 10.7607 1.28033 10.4678L0.21967 9.40717ZM10.6875 0.75C10.6875 0.335786 10.3517 2.97145e-09 9.9375 1.50485e-07L3.1875 -2.70983e-07C2.77329 -2.70983e-07 2.4375 0.335786 2.4375 0.75C2.4375 1.16421 2.77329 1.5 3.1875 1.5H9.1875V7.5C9.1875 7.91421 9.52329 8.25 9.9375 8.25C10.3517 8.25 10.6875 7.91421 10.6875 7.5L10.6875 0.75ZM0.75 9.9375L1.28033 10.4678L10.4678 1.28033L9.9375 0.75L9.40717 0.21967L0.21967 9.40717L0.75 9.9375Z" fill="currentColor" />
-                                        </svg>
-                                    </i>
-                                    <span class="mt-2">
-                                        <span class="fw-700 text-white">Let’s Talk</span>
-                                    </span>
-                                </span>
-                            </a>
-                        </div>
-                        <div class="row align-items-end">
-                            <!-- <div class="col-xxl-2 col-xl-2 col-lg-4 col-md-5">
-                                <div class="at-hero-video mb-30 at_fade_anim">
-                                    <div class="rounded-3 overflow-hidden">
-                                        <video class="img-cover" autoplay muted loop playsinline poster="assets/imgs/pages/img-2.webp">
-                                            <source src="assets/imgs/video/video-1.mp4" type="video/mp4">
-                                        </video>
-                                    </div>
-                                    <a class="at-btn text-white rounded-0 bg-transparent px-0 pt-2 pb-3 border-0" href="about.html">
-                                        <span>
-                                            <span class="text-1">How we work</span>
-                                            <span class="text-2">How we work</span>
-                                        </span>
-                                        <i>
-                                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M0.21967 9.40717C-0.0732232 9.70006 -0.0732232 10.1749 0.21967 10.4678C0.512563 10.7607 0.987437 10.7607 1.28033 10.4678L0.21967 9.40717ZM10.6875 0.75C10.6875 0.335786 10.3517 2.97145e-09 9.9375 1.50485e-07L3.1875 -2.70983e-07C2.77329 -2.70983e-07 2.4375 0.335786 2.4375 0.75C2.4375 1.16421 2.77329 1.5 3.1875 1.5H9.1875V7.5C9.1875 7.91421 9.52329 8.25 9.9375 8.25C10.3517 8.25 10.6875 7.91421 10.6875 7.5L10.6875 0.75ZM0.75 9.9375L1.28033 10.4678L10.4678 1.28033L9.9375 0.75L9.40717 0.21967L0.21967 9.40717L0.75 9.9375Z" fill="currentColor" />
-                                            </svg>
-                                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M0.21967 9.40717C-0.0732232 9.70006 -0.0732232 10.1749 0.21967 10.4678C0.512563 10.7607 0.987437 10.7607 1.28033 10.4678L0.21967 9.40717ZM10.6875 0.75C10.6875 0.335786 10.3517 2.97145e-09 9.9375 1.50485e-07L3.1875 -2.70983e-07C2.77329 -2.70983e-07 2.4375 0.335786 2.4375 0.75C2.4375 1.16421 2.77329 1.5 3.1875 1.5H9.1875V7.5C9.1875 7.91421 9.52329 8.25 9.9375 8.25C10.3517 8.25 10.6875 7.91421 10.6875 7.5L10.6875 0.75ZM0.75 9.9375L1.28033 10.4678L10.4678 1.28033L9.9375 0.75L9.40717 0.21967L0.21967 9.40717L0.75 9.9375Z" fill="currentColor" />
-                                            </svg>
-                                        </i>
-                                    </a>
-                                </div>
-                            </div> -->
-                            <div class="col-xxl-2 col-xl-3 col-lg-5 col-md-5">
-                                <div class="alt-hero-service at-hero-service mb-30">
-                                    <ul>
-                                        <li class="pb-10  at_fade_anim">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M30 20H20V30L20 40H10L0 30L10 20H0V0H10L20 10V1.90735e-06L30 0L40 10L30 20ZM20 10V20H10L20 10Z" fill="white" />
-                                                <path d="M30 20H40V40H30L20 30L30 20Z" fill="white" />
-                                            </svg>
-                                        </li>
-                                        <li class="at_fade_anim">
-                                            <span class="fz-font-md fw-500 text-white ">
-                                                we are a service-led <span class="at-accent-serif">talent evidence</span> company</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-xxl-5 offset-xxl-2 col-xl-6 col-12 ms-auto order-xl-1 order-md-2">
-                                <div class="at-hero-content mb-30">
-                                    <span class="at-hero-subtitle text-white mb-10 d-inline-block at_fade_anim">Changing the way we hire</span>
-                                    <h3 class="at-hero-title text-white">
-                                        <span class="at-hero-line"><span class="at-hero-line-inner"><span class="at-hero-accent">The Evidence</span> layer</span></span>
-                                        <span class="at-hero-line"><span class="at-hero-line-inner">for the new world of work.</span></span>
-                                        <span class="at-hero-line"><span class="at-hero-line-inner"><span class="at-hero-accent"></span></span></span>
-                                    </h3>
-                                    <div class="at-hero-btn d-flex flex-wrap gap-2 pt-20  at_fade_anim" data-delay="0.5" data-fade-from="bottom">
-                                        <a class="at-btn bg-white rounded-0 text-dark" href="programmes.html">
-                                            <span>
-                                                <span class="text-1">Explore Programmes</span>
-                                                <span class="text-2">Explore Programmes</span>
-                                            </span>
-                                            <i>
-                                                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M0.21967 9.40717C-0.0732232 9.70006 -0.0732232 10.1749 0.21967 10.4678C0.512563 10.7607 0.987437 10.7607 1.28033 10.4678L0.21967 9.40717ZM10.6875 0.75C10.6875 0.335786 10.3517 2.97145e-09 9.9375 1.50485e-07L3.1875 -2.70983e-07C2.77329 -2.70983e-07 2.4375 0.335786 2.4375 0.75C2.4375 1.16421 2.77329 1.5 3.1875 1.5H9.1875V7.5C9.1875 7.91421 9.52329 8.25 9.9375 8.25C10.3517 8.25 10.6875 7.91421 10.6875 7.5L10.6875 0.75ZM0.75 9.9375L1.28033 10.4678L10.4678 1.28033L9.9375 0.75L9.40717 0.21967L0.21967 9.40717L0.75 9.9375Z" fill="currentColor" />
-                                                </svg>
-                                                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M0.21967 9.40717C-0.0732232 9.70006 -0.0732232 10.1749 0.21967 10.4678C0.512563 10.7607 0.987437 10.7607 1.28033 10.4678L0.21967 9.40717ZM10.6875 0.75C10.6875 0.335786 10.3517 2.97145e-09 9.9375 1.50485e-07L3.1875 -2.70983e-07C2.77329 -2.70983e-07 2.4375 0.335786 2.4375 0.75C2.4375 1.16421 2.77329 1.5 3.1875 1.5H9.1875V7.5C9.1875 7.91421 9.52329 8.25 9.9375 8.25C10.3517 8.25 10.6875 7.91421 10.6875 7.5L10.6875 0.75ZM0.75 9.9375L1.28033 10.4678L10.4678 1.28033L9.9375 0.75L9.40717 0.21967L0.21967 9.40717L0.75 9.9375Z" fill="currentColor" />
-                                                </svg>
-                                            </i>
-                                        </a>
-                                        <a class="at-btn at-btn-border-white text-white rounded-0" href="contact.html">
-                                            <span>
-                                                <span class="text-1">hire exceptional people</span>
-                                                <span class="text-2">hire exceptional people</span>
-                                            </span>
-                                            <i>
-                                                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M0.21967 9.40717C-0.0732232 9.70006 -0.0732232 10.1749 0.21967 10.4678C0.512563 10.7607 0.987437 10.7607 1.28033 10.4678L0.21967 9.40717ZM10.6875 0.75C10.6875 0.335786 10.3517 2.97145e-09 9.9375 1.50485e-07L3.1875 -2.70983e-07C2.77329 -2.70983e-07 2.4375 0.335786 2.4375 0.75C2.4375 1.16421 2.77329 1.5 3.1875 1.5H9.1875V7.5C9.1875 7.91421 9.52329 8.25 9.9375 8.25C10.3517 8.25 10.6875 7.91421 10.6875 7.5L10.6875 0.75ZM0.75 9.9375L1.28033 10.4678L10.4678 1.28033L9.9375 0.75L9.40717 0.21967L0.21967 9.40717L0.75 9.9375Z" fill="currentColor" />
-                                                </svg>
-                                                <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M0.21967 9.40717C-0.0732232 9.70006 -0.0732232 10.1749 0.21967 10.4678C0.512563 10.7607 0.987437 10.7607 1.28033 10.4678L0.21967 9.40717ZM10.6875 0.75C10.6875 0.335786 10.3517 2.97145e-09 9.9375 1.50485e-07L3.1875 -2.70983e-07C2.77329 -2.70983e-07 2.4375 0.335786 2.4375 0.75C2.4375 1.16421 2.77329 1.5 3.1875 1.5H9.1875V7.5C9.1875 7.91421 9.52329 8.25 9.9375 8.25C10.3517 8.25 10.6875 7.91421 10.6875 7.5L10.6875 0.75ZM0.75 9.9375L1.28033 10.4678L10.4678 1.28033L9.9375 0.75L9.40717 0.21967L0.21967 9.40717L0.75 9.9375Z" fill="currentColor" />
-                                                </svg>
-                                            </i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-1 ms-auto text-end align-self-start rotate-90 order-xl-2 order-md-1 d-none d-md-block">
-                                <a href="mailto:hello@billbeak.com" class="text-white fw-600">
-                                    <span class="at_fade_anim">hello@billbeak.com</span>
+                        <div class="bb-eth-inner">
+                            <span class="bb-eth-kicker">Changing the way we hire</span>
+                            <h1 class="bb-eth-title">
+                                <span class="bb-eth-line"><span class="bb-eth-line-in">The <span class="bb-eth-accent">Evidence</span> layer</span></span>
+                                <span class="bb-eth-line"><span class="bb-eth-line-in">for the new world of work.</span></span>
+                            </h1>
+                            <p class="bb-eth-sub">A service-led talent-evidence company — connecting brilliant talent to global hiring demand.</p>
+                            <div class="bb-eth-cta">
+                                <a class="bb-eth-btn is-primary" href="programmes.html">
+                                    <span>Explore Programmes</span>
+                                    <svg width="12" height="12" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.21967 9.40717C-0.0732232 9.70006 -0.0732232 10.1749 0.21967 10.4678C0.512563 10.7607 0.987437 10.7607 1.28033 10.4678L0.21967 9.40717ZM10.6875 0.75C10.6875 0.335786 10.3517 2.97145e-09 9.9375 1.50485e-07L3.1875 -2.70983e-07C2.77329 -2.70983e-07 2.4375 0.335786 2.4375 0.75C2.4375 1.16421 2.77329 1.5 3.1875 1.5H9.1875V7.5C9.1875 7.91421 9.52329 8.25 9.9375 8.25C10.3517 8.25 10.6875 7.91421 10.6875 7.5L10.6875 0.75ZM0.75 9.9375L1.28033 10.4678L10.4678 1.28033L9.9375 0.75L9.40717 0.21967L0.21967 9.40717L0.75 9.9375Z" fill="currentColor" /></svg>
+                                </a>
+                                <a class="bb-eth-btn is-ghost" href="contact.html">
+                                    <span>Hire exceptional people</span>
+                                    <svg width="12" height="12" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.21967 9.40717C-0.0732232 9.70006 -0.0732232 10.1749 0.21967 10.4678C0.512563 10.7607 0.987437 10.7607 1.28033 10.4678L0.21967 9.40717ZM10.6875 0.75C10.6875 0.335786 10.3517 2.97145e-09 9.9375 1.50485e-07L3.1875 -2.70983e-07C2.77329 -2.70983e-07 2.4375 0.335786 2.4375 0.75C2.4375 1.16421 2.77329 1.5 3.1875 1.5H9.1875V7.5C9.1875 7.91421 9.52329 8.25 9.9375 8.25C10.3517 8.25 10.6875 7.91421 10.6875 7.5L10.6875 0.75ZM0.75 9.9375L1.28033 10.4678L10.4678 1.28033L9.9375 0.75L9.40717 0.21967L0.21967 9.40717L0.75 9.9375Z" fill="currentColor" /></svg>
                                 </a>
                             </div>
-                        </div>
-                        <div class="row pt-60  at_fade_anim">
-                            <div class="col-xxl-8 col-xl-9 mx-auto">
-                                <div class="at-founder-credential">
-                                    <span class="at-founder-credential-eyebrow">Built by a recruiter</span>
-                                    <div class="at-founder-credential-stats">
-                                        <div class="at-founder-credential-num-wrap">
-                                            <span class="at-founder-credential-num" data-count="13">0</span>
-                                            <span class="at-founder-credential-num-cap">Years of<br>Hiring Intelligence</span>
-                                        </div>
-                                        <span class="at-founder-credential-plus" aria-hidden="true">+</span>
-                                        <div class="at-founder-credential-chip">
-                                            <span class="at-founder-credential-chip-icon" aria-hidden="true">
-                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                                                    <path d="M12 0L14.2 9.8L24 12L14.2 14.2L12 24L9.8 14.2L0 12L9.8 9.8L12 0Z" fill="currentColor" />
-                                                </svg>
-                                            </span>
-                                            <span class="at-founder-credential-chip-text">Applied&#8209;AI<br>Practitioner</span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="bb-eth-meta">
+                                <span class="bb-eth-meta-num">13<span>+</span></span>
+                                <span class="bb-eth-meta-label">years of hiring intelligence,<br>now paired with an applied-AI practice</span>
                             </div>
                         </div>
+                    </div>
+                    <div class="bb-eth-scroll" aria-hidden="true">
+                        <span>Scroll</span>
+                        <span class="bb-eth-scroll-line"></span>
                     </div>
                 </div>
                 <!-- at-hero-area-end -->

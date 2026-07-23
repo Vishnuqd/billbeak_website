@@ -33,6 +33,9 @@
     var DOT_ALPHA = 0.09;
     var PARALLAX_MESH = 16, PARALLAX_WORD = 24;
     var WORD_ALPHA = 0.9;
+    // Cycling keyword overlay — disabled for now at client's request.
+    // Flip to true to bring the hover/interval word cycle back.
+    var SHOW_KEYWORDS = false;
     var WORDS = ['Discover', 'Learn', 'Build', 'Create', 'Collaborate', 'Connect', 'Contribute', 'Showcase', 'Verify', 'Prove', 'Mentor', 'Grow', 'Belong', 'Elevate', 'Illuminate', 'Thrive', 'Rise', 'Get Hired'];
 
     var w = 0, h = 0, dpr = 1;
@@ -199,20 +202,23 @@
     // the cursor while hovering, then the particles fade back out.
     function spawnParticles() {
         if (!pointer.inside) return;
-        for (var s = 0; s < 5; s++) {
-            if (particles.length >= 160) break;
+        // Toned down: emit fewer, dimmer, smaller specks so the hover
+        // reads as a soft shimmer rather than a starburst.
+        if (Math.random() > 0.6) return; // skip ~40% of frames
+        for (var s = 0; s < 2; s++) {
+            if (particles.length >= 46) break;
             var ang = Math.random() * Math.PI * 2;
-            var rad = Math.random() * RADIUS * 0.55;
+            var rad = Math.random() * RADIUS * 0.4;
             var vang = Math.random() * Math.PI * 2;
-            var sp = 0.15 + Math.random() * 0.9;
+            var sp = 0.1 + Math.random() * 0.55;
             particles.push({
                 x: pointer.x + Math.cos(ang) * rad,
                 y: pointer.y + Math.sin(ang) * rad,
                 vx: Math.cos(vang) * sp,
-                vy: Math.sin(vang) * sp - 0.2,
+                vy: Math.sin(vang) * sp - 0.15,
                 life: 1,
-                decay: 0.009 + Math.random() * 0.013,
-                size: 0.6 + Math.random() * 1.5,
+                decay: 0.014 + Math.random() * 0.016,
+                size: 0.5 + Math.random() * 1,
             });
         }
     }
@@ -223,7 +229,7 @@
             var p = particles[i];
             p.x += p.vx; p.y += p.vy; p.vy += 0.006; p.life -= p.decay;
             if (p.life <= 0) { particles.splice(i, 1); continue; }
-            ctx.fillStyle = 'rgba(255,255,255,' + (p.life * 0.55).toFixed(3) + ')';
+            ctx.fillStyle = 'rgba(255,255,255,' + (p.life * 0.3).toFixed(3) + ')';
             ctx.beginPath();
             ctx.arc(p.x + px, p.y + py, p.size * p.life, 0, Math.PI * 2);
             ctx.fill();
@@ -334,7 +340,8 @@
     // Keywords follow the cursor on pointer devices; on touch/reduced-motion
     // they stay in the fixed centred spot (the CSS default).
     var wordPX = null, wordPY = null;
-    var cursorWords = hasGsap && fine && keywordsEl;
+    if (keywordsEl && !SHOW_KEYWORDS) keywordsEl.style.display = 'none';
+    var cursorWords = SHOW_KEYWORDS && hasGsap && fine && keywordsEl;
     if (cursorWords) {
         keywordsEl.classList.add('is-cursor');
         gsap.set(keywordsEl, { xPercent: -50, yPercent: -50, opacity: 0 });
@@ -378,11 +385,12 @@
     }
     function startWords(ms) {
         clearInterval(wordTimer);
+        if (!SHOW_KEYWORDS) return; // keyword overlay disabled
         if (reduce) return; // reduced motion: keep the first word
         wordTimer = setInterval(nextWord, ms || WORD_MS);
     }
-    if (hasGsap && wordEl) gsap.set(wordEl, { opacity: WORD_ALPHA });
-    if (fine) {
+    if (SHOW_KEYWORDS && hasGsap && wordEl) gsap.set(wordEl, { opacity: WORD_ALPHA });
+    if (SHOW_KEYWORDS && fine) {
         section.addEventListener('mouseenter', function () { startWords(1500); });
         section.addEventListener('mouseleave', function () { startWords(WORD_MS); });
     }

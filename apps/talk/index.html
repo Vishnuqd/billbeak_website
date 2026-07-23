@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0a0a0b" />
+    <title>Billbeak</title>
+    <link rel="icon" type="image/png" href="/talk/favicon.png" />
+    <script>
+      // Set the theme before first paint to avoid a flash. Defaults to the
+      // user's stored choice, else the system preference (dark-first).
+      (function () {
+        try {
+          var stored = localStorage.getItem("billbeak:talk:theme");
+          var prefersLight =
+            window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+          var theme = stored || (prefersLight ? "light" : "dark");
+          document.documentElement.setAttribute("data-theme", theme);
+        } catch (e) {
+          /* keep the default dark theme */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

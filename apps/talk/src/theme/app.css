@@ -1,0 +1,538 @@
+/* ------------------------------------------------------------------ *
+ * App shell + layout
+ * ------------------------------------------------------------------ */
+
+.bb-app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.bb-layout {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* Top bar: back (left) · close (right) */
+.bb-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  padding-top: max(var(--space-4), env(safe-area-inset-top));
+}
+
+.bb-topbar__slot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 4rem;
+}
+.bb-topbar__slot--right {
+  justify-content: flex-end;
+}
+
+.bb-wordmark {
+  font-size: var(--text-small);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  user-select: none;
+}
+
+/* Centered content column */
+.bb-main {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-5);
+}
+
+.bb-content {
+  width: 100%;
+  max-width: var(--measure);
+  margin: clamp(var(--space-5), 8vh, var(--space-9)) auto;
+}
+
+/* Footer: progress + keyboard hints */
+.bb-footer {
+  padding: var(--space-4) var(--space-5);
+  padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* ------------------------------------------------------------------ *
+ * Icon button (back / close)
+ * ------------------------------------------------------------------ */
+
+.bb-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  color: var(--text-dim);
+  font-size: var(--text-small);
+  transition:
+    color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+  min-height: 40px;
+}
+.bb-iconbtn:hover {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+.bb-iconbtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Progress
+ * ------------------------------------------------------------------ */
+
+.bb-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.bb-progress__track {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.bb-progress__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--text);
+  border-radius: var(--radius-pill);
+  transition: width var(--dur) var(--ease);
+}
+.bb-progress__label {
+  font-size: var(--text-tiny);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ *
+ * Keyboard hints
+ * ------------------------------------------------------------------ */
+
+.bb-hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  font-size: var(--text-tiny);
+  color: var(--text-faint);
+}
+.bb-hints__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.bb-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4em;
+  height: 1.4em;
+  padding: 0 0.35em;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+@media (max-width: 560px) {
+  .bb-hints {
+    display: none; /* touch devices don't need keyboard hints */
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Question
+ * ------------------------------------------------------------------ */
+
+.bb-question {
+  animation: bb-enter var(--dur) var(--ease) both;
+}
+@keyframes bb-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bb-question {
+    animation: none;
+  }
+}
+
+.bb-question__eyebrow {
+  font-size: var(--text-tiny);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: var(--space-4);
+}
+.bb-question__prompt {
+  font-size: var(--text-question);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.02em;
+  font-weight: 560;
+  margin-bottom: var(--space-3);
+  text-wrap: balance;
+}
+.bb-question__help {
+  color: var(--text-dim);
+  font-size: var(--text-lead);
+  margin-bottom: var(--space-6);
+  max-width: 52ch;
+}
+.bb-question__body {
+  margin-top: var(--space-6);
+}
+.bb-question__footer {
+  margin-top: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* ------------------------------------------------------------------ *
+ * Options (single / multi choice)
+ * ------------------------------------------------------------------ */
+
+.bb-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.bb-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  text-align: left;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--text-lead);
+  min-height: 60px;
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+.bb-option:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
+}
+.bb-option:active {
+  transform: scale(0.995);
+}
+.bb-option[aria-checked="true"],
+.bb-option[data-highlighted="true"] {
+  border-color: var(--border-focus);
+}
+.bb-option[aria-checked="true"] {
+  background: var(--surface-active);
+}
+.bb-option__key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+}
+.bb-option__label {
+  flex: 1;
+}
+.bb-option__check {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--text);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.bb-option[aria-checked="true"] .bb-option__check {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------ *
+ * Text-like inputs
+ * ------------------------------------------------------------------ */
+
+.bb-field {
+  width: 100%;
+}
+.bb-input,
+.bb-textarea {
+  width: 100%;
+  padding: var(--space-4) 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-strong);
+  color: var(--text);
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.6rem);
+  letter-spacing: -0.01em;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+.bb-input::placeholder,
+.bb-textarea::placeholder {
+  color: var(--text-faint);
+}
+.bb-input:focus,
+.bb-textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+.bb-textarea {
+  min-height: 3.2em;
+  line-height: var(--leading-normal);
+  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+}
+
+/* ------------------------------------------------------------------ *
+ * Buttons
+ * ------------------------------------------------------------------ */
+
+.bb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: 0 var(--space-6);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-body);
+  font-weight: 520;
+  transition:
+    background var(--dur-fast) var(--ease),
+    opacity var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+.bb-btn:active {
+  transform: scale(0.98);
+}
+.bb-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.bb-btn--primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.bb-btn--primary:hover:not(:disabled) {
+  background: var(--text);
+}
+.bb-btn--ghost {
+  color: var(--text-dim);
+}
+.bb-btn--ghost:hover:not(:disabled) {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+.bb-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Field errors
+ * ------------------------------------------------------------------ */
+
+.bb-errors {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.bb-error {
+  color: var(--danger);
+  font-size: var(--text-small);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  animation: bb-shake 0.28s var(--ease);
+}
+@keyframes bb-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bb-error {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Upload
+ * ------------------------------------------------------------------ */
+
+.bb-upload {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: var(--space-6);
+  text-align: center;
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+.bb-upload[data-dragging="true"] {
+  border-color: var(--border-focus);
+  background: var(--surface-hover);
+}
+.bb-upload__hint {
+  color: var(--text-dim);
+  font-size: var(--text-small);
+  margin-top: var(--space-2);
+}
+.bb-upload__file {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.bb-upload__meta {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+.bb-upload__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bb-upload__size {
+  font-size: var(--text-tiny);
+  color: var(--text-faint);
+}
+.bb-upload__bar {
+  height: 2px;
+  background: var(--border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-top: var(--space-3);
+}
+.bb-upload__bar > span {
+  display: block;
+  height: 100%;
+  background: var(--text);
+  transition: width var(--dur-fast) linear;
+}
+
+/* ------------------------------------------------------------------ *
+ * Full-screen states (loading / completion / error / offline)
+ * ------------------------------------------------------------------ */
+
+.bb-state {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  text-align: center;
+}
+.bb-state__inner {
+  max-width: 34rem;
+  animation: bb-enter var(--dur) var(--ease) both;
+}
+.bb-state__mark {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto var(--space-5);
+  color: var(--text);
+}
+.bb-state__title {
+  font-size: clamp(1.6rem, 1rem + 2vw, 2.2rem);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.02em;
+  font-weight: 560;
+  margin-bottom: var(--space-3);
+  text-wrap: balance;
+}
+.bb-state__body {
+  color: var(--text-dim);
+  font-size: var(--text-lead);
+  margin-bottom: var(--space-6);
+}
+.bb-state__actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Spinner */
+.bb-spinner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  border-top-color: var(--text);
+  animation: bb-spin 0.7s linear infinite;
+}
+@keyframes bb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Offline banner */
+.bb-offline {
+  position: fixed;
+  left: 50%;
+  bottom: max(var(--space-5), env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow);
+  font-size: var(--text-small);
+  color: var(--text-dim);
+}
+
+/* Theme toggle (subtle, top-right area) */
+.bb-themetoggle {
+  color: var(--text-faint);
+}
+.bb-themetoggle:hover {
+  color: var(--text);
+}
