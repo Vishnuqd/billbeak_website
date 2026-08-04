@@ -1,0 +1,19 @@
+{
+  "key": "university",
+  "name": "Bring Billbeak to a university",
+  "description": "A university is looking for student training, faculty development or both.",
+  "icon": "graduation-cap",
+  "theme": { "palette": "billbeak-warm", "accent": "rust" },
+  "priority": 3,
+  "estimatedSeconds": 80,
+  "supportedDevices": ["desktop", "tablet", "mobile"],
+  "entryRoute": "/talk",
+  "entryNode": "uni_role",
+  "completionRoute": "/talk/complete/university",
+  "journeyType": "b2b",
+  "audience": "institution",
+  "version": "1.0.0",
+  "metadata": {
+    "persists": ["journeyType", "journeyStage", "decisionMaker", "preferredContact", "previousRelationship", "leadSource", "leadSourceDetail", "version", "createdDate", "updatedDate"]
+  }
+}

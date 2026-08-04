@@ -1,0 +1,30 @@
+# Docker build context = repo root (services/api/Dockerfile bundles config/ + services/api/).
+# Keep the context small: only config/ and services/api/ are COPYed.
+
+.git/
+.github/
+.vscode/
+.DS_Store
+**/.DS_Store
+
+# Frontend + engine (not part of the API image)
+apps/
+packages/
+node_modules/
+**/node_modules/
+**/dist/
+
+# Marketing site assets (huge PNGs) — not needed by the API
+assets/
+*.html
+academy*.html
+
+# Python local artifacts
+**/.venv/
+**/__pycache__/
+**/*.pyc
+**/*.sqlite3
+**/*.db
+services/api/uploads/
+services/api/tests/
+services/api/.env

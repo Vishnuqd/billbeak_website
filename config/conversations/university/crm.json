@@ -1,0 +1,29 @@
+{
+  "purpose": "CRM routing + scoring configuration for the University journey.",
+  "journeyKey": "university",
+  "pipeline": "Billbeak Academy — University Partnerships",
+  "ownerTeam": "academy_partnerships",
+  "priorityBase": "medium",
+  "lifecycleStage": "lead",
+  "journeyStageField": "journeyStage",
+  "tags": ["university", "academy", "b2b", "partnership"],
+  "leadScore": {
+    "max": 100,
+    "inputs": [
+      { "signal": "journeyStage", "weights": { "current_semester": 35, "next_semester": 25, "planning": 12 } },
+      { "signal": "audienceSize", "weights": { "gt_300": 25, "151_300": 20, "76_150": 14, "30_75": 8, "lt_30": 4, "not_sure": 6 } },
+      { "signal": "supportAudience", "weights": { "both": 15, "students": 10, "faculty": 10, "exploring": 5 } },
+      { "signal": "decisionMaker", "weights": { "decision_maker": 15, "evaluator": 10, "information_gathering": 4, "someone_else": 2 } },
+      { "signal": "curriculumBrief", "type": "presence", "weight": 10 }
+    ]
+  },
+  "routing": [
+    { "when": "journeyStage == 'current_semester'", "priority": "urgent" },
+    { "when": "supportAudience == 'faculty'", "assignTo": "faculty_development_pod" },
+    { "when": "audienceSize == 'gt_300'", "assignTo": "large_institution_pod" }
+  ],
+  "automationHooks": {
+    "onCreate": ["emit_timeline:programme_review", "notify_internal", "send_visitor_confirmation"],
+    "future": ["enrich_institution_from_domain", "map_academic_calendar", "recommend_curriculum_template"]
+  }
+}

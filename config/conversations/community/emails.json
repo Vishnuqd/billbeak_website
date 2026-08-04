@@ -1,0 +1,31 @@
+{
+  "purpose": "Email/notification configuration for the Community journey.",
+  "journeyKey": "community",
+  "messages": [
+    {
+      "id": "internal_notification",
+      "type": "internal",
+      "recipientRule": "team:community",
+      "subject": "New community interest — {firstName} ({journeyStage})",
+      "variables": ["firstName", "journeyStage", "interests", "leadScore"],
+      "delayMinutes": 0
+    },
+    {
+      "id": "visitor_confirmation",
+      "type": "visitor",
+      "recipientRule": "visitor:email",
+      "subject": "You're on our radar, {firstName}",
+      "variables": ["firstName", "interests"],
+      "delayMinutes": 0
+    },
+    {
+      "id": "followup",
+      "type": "visitor",
+      "recipientRule": "visitor:email",
+      "subject": "The Billbeak opportunities that fit you",
+      "variables": ["firstName", "interests"],
+      "delayMinutes": 4320,
+      "condition": "no_engagement"
+    }
+  ]
+}

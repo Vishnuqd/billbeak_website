@@ -1,0 +1,19 @@
+{
+  "key": "corporate",
+  "name": "Build capability in my organisation",
+  "description": "An organisation is exploring one of Billbeak's signature corporate capability programmes.",
+  "icon": "layers",
+  "theme": { "palette": "billbeak-warm", "accent": "rust" },
+  "priority": 2,
+  "estimatedSeconds": 75,
+  "supportedDevices": ["desktop", "tablet", "mobile"],
+  "entryRoute": "/talk",
+  "entryNode": "corp_role",
+  "completionRoute": "/talk/complete/corporate",
+  "journeyType": "b2b",
+  "audience": "organisation",
+  "version": "1.0.0",
+  "metadata": {
+    "persists": ["journeyType", "journeyStage", "decisionMaker", "preferredContact", "previousRelationship", "leadSource", "leadSourceDetail", "version", "createdDate", "updatedDate"]
+  }
+}

@@ -1,10 +1,11 @@
 /**
- * App-side upload provider (placeholder).
+ * Backend upload — replaces the placeholder provider.
  *
- * Simulates a resumable upload with progress so the Upload UI can be built and
- * tested without any real storage. The engine only ever sees "give me a
- * reference for this file". Swapping in a real S3/presigned-URL provider is an
- * adapter change with no engine or component change.
+ * Uploads go straight to the backend (`POST /journeys/{id}/uploads`) via XHR so
+ * we get real progress, cancel (AbortSignal) and retry. Components upload the
+ * file and submit the returned reference to the engine (which then just stores
+ * it). `BackendUploadProvider` is the engine-level safety net for any raw file
+ * that reaches the engine's upload routing.
  */
 
 import type {
@@ -13,46 +14,100 @@ import type {
   UploadProvider,
   UploadReference,
 } from "@billbeak/conversation-engine";
+import { API_BASE_URL } from "@/api/client.ts";
+import type { BackendSync } from "@/engine/backend/sync.ts";
 
-export interface PlaceholderUploadOptions {
-  /** Total simulated duration in ms. */
-  readonly durationMs?: number;
-  /** Force a failure to exercise the retry path. */
-  readonly failOnce?: boolean;
+export interface UploadHandlers {
+  onProgress?: (fraction: number) => void;
+  signal?: AbortSignal;
 }
 
-export class PlaceholderUploadProvider implements UploadProvider {
-  private readonly durationMs: number;
-  private shouldFail: boolean;
-  private counter = 0;
+interface RawUploadOut {
+  id: string;
+  filename: string;
+  contentType: string;
+  sizeBytes: number;
+  scanStatus: string;
+  url: string | null;
+}
 
-  constructor(options: PlaceholderUploadOptions = {}) {
-    this.durationMs = options.durationMs ?? 1100;
-    this.shouldFail = options.failOnce ?? false;
-  }
+export function uploadToBackend(
+  journeyId: string,
+  file: File,
+  questionId: string | null,
+  handlers: UploadHandlers = {},
+): Promise<UploadReference> {
+  return new Promise<UploadReference>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const form = new FormData();
+    form.append("file", file);
+    if (questionId) form.append("questionId", questionId);
+
+    xhr.open("POST", `${API_BASE_URL}/journeys/${journeyId}/uploads`);
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && handlers.onProgress) handlers.onProgress(e.loaded / e.total);
+    };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const body = JSON.parse(xhr.responseText) as RawUploadOut;
+        resolve({
+          id: body.id,
+          filename: body.filename,
+          contentType: body.contentType,
+          size: body.sizeBytes,
+          status: (body.scanStatus as UploadReference["status"]) ?? "pending",
+          ...(body.url ? { url: body.url } : {}),
+        });
+      } else {
+        let message = "Upload failed. Please try again.";
+        try {
+          message = (JSON.parse(xhr.responseText).error?.message as string) ?? message;
+        } catch {
+          /* keep default */
+        }
+        reject(new Error(message));
+      }
+    };
+    xhr.onerror = () => reject(new Error("Network error during upload."));
+    xhr.onabort = () => reject(new DOMException("Upload cancelled", "AbortError"));
+
+    if (handlers.signal) {
+      if (handlers.signal.aborted) {
+        xhr.abort();
+        return;
+      }
+      handlers.signal.addEventListener("abort", () => xhr.abort());
+    }
+    xhr.send(form);
+  });
+}
+
+/** The uploader components call directly (progress + cancel + retry). */
+export type Uploader = (
+  file: File,
+  questionId: string | null,
+  handlers?: UploadHandlers,
+) => Promise<UploadReference>;
+
+export function createUploader(sync: BackendSync): Uploader {
+  return async (file, questionId, handlers) => {
+    const journeyId = await sync.ensureJourneyId();
+    if (!journeyId) {
+      throw new Error("You appear to be offline. Reconnect to upload your file.");
+    }
+    return uploadToBackend(journeyId, file, questionId, handlers ?? {});
+  };
+}
+
+/** Engine-level provider (safety net). Real uploads go through the components. */
+export class BackendUploadProvider implements UploadProvider {
+  constructor(private readonly sync: BackendSync) {}
 
   async upload(input: UploadInput, onProgress?: UploadProgress): Promise<UploadReference> {
-    const steps = 20;
-    const stepMs = this.durationMs / steps;
-    for (let i = 1; i <= steps; i += 1) {
-      await delay(stepMs);
-      onProgress?.(i / steps);
-      if (this.shouldFail && i === Math.floor(steps / 2)) {
-        this.shouldFail = false; // fail only once, so retry succeeds
-        throw new Error("Upload interrupted. Please try again.");
-      }
-    }
-    this.counter += 1;
-    return {
-      id: `upload_${this.counter}_${Date.now().toString(36)}`,
-      filename: input.file.name,
-      contentType: input.file.type || "application/octet-stream",
-      size: input.file.size,
-      status: "pending",
-    };
+    const journeyId = await this.sync.ensureJourneyId();
+    if (!journeyId) throw new Error("Cannot upload while offline.");
+    const handlers: UploadHandlers = onProgress ? { onProgress } : {};
+    return uploadToBackend(journeyId, input.file as unknown as File, input.questionId, handlers);
   }
-}
-
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }

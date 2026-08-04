@@ -7,11 +7,14 @@
 
 import type { ComponentType } from "react";
 import type { AnswerValue, QuestionDefinition, ValidationError } from "@billbeak/conversation-engine";
+import type { TokenMap } from "@/lib/interpolate.ts";
 
 export interface QuestionRendererProps {
   readonly question: QuestionDefinition;
   /** Prior answer, if any — used to prefill on back-navigation. */
   readonly initialValue: AnswerValue | undefined;
+  /** Interpolation tokens (e.g. firstName) for suggested-answer prefill. */
+  readonly tokens: TokenMap;
   /** True while the engine is validating/uploading/transitioning — lock inputs. */
   readonly busy: boolean;
   /** True specifically while the engine is uploading this answer. */

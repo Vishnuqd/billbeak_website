@@ -1,15 +1,16 @@
 /**
- * File upload renderer. Drag-and-drop or click to choose; the engine routes the
- * file through the injected UploadProvider. While the engine is uploading we show
- * a busy state; on failure the engine returns here with an error and Continue
- * becomes "Try again" (retry).
+ * File upload renderer. Uploads directly to the backend via the uploader
+ * (real progress, cancel, retry), then submits the returned reference to the
+ * engine. Enforces the configured accept + size before uploading.
  */
 
 import { useRef, useState } from "react";
 import type { DragEvent } from "react";
+import type { UploadReference } from "@billbeak/conversation-engine";
+import { useUploader } from "@/providers/EngineProvider.tsx";
 import { FileIcon } from "@/icons/index.tsx";
+import { Button } from "@/components/primitives/Button.tsx";
 import { FieldErrors } from "./FieldErrors.tsx";
-import { QuestionFooter } from "./QuestionFooter.tsx";
 import type { QuestionRendererProps } from "./types.ts";
 
 function formatBytes(bytes: number): string {
@@ -18,37 +19,79 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function readAccept(config: QuestionRendererProps["question"]["config"]): string | undefined {
-  const accept = config?.["accept"];
-  return typeof accept === "string" ? accept : undefined;
-}
+type Phase = "idle" | "uploading" | "error";
 
-export function FileUpload({
-  question,
-  busy,
-  uploading,
-  errors,
-  onSubmit,
-  onSkip,
-}: QuestionRendererProps) {
+export function FileUpload({ question, errors, onSubmit, onSkip }: QuestionRendererProps) {
+  const upload = useUploader();
+  const config = question.config ?? {};
+  const accept = typeof config["accept"] === "string" ? (config["accept"] as string) : undefined;
+  const maxMB = typeof config["maxSizeMB"] === "number" ? (config["maxSizeMB"] as number) : 10;
+
   const [file, setFile] = useState<File | null>(null);
+  const [phase, setPhase] = useState<Phase>("idle");
+  const [progress, setProgress] = useState(0);
+  const [localError, setLocalError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
-  const pick = () => inputRef.current?.click();
+  const busy = phase === "uploading";
+
+  const validateFile = (f: File): string | null => {
+    if (f.size > maxMB * 1024 * 1024) return `File is too large (max ${maxMB} MB).`;
+    if (accept) {
+      const allowed = accept.split(",").map((a) => a.trim().toLowerCase());
+      if (allowed.length && !allowed.some((ext) => f.name.toLowerCase().endsWith(ext))) {
+        return `Unsupported file type. Allowed: ${accept}.`;
+      }
+    }
+    return null;
+  };
+
+  const choose = (f: File) => {
+    const problem = validateFile(f);
+    setLocalError(problem);
+    setPhase("idle");
+    setFile(problem ? null : f);
+  };
+
+  const start = async () => {
+    if (!file) return;
+    setPhase("uploading");
+    setProgress(0);
+    setLocalError(null);
+    const controller = new AbortController();
+    abortRef.current = controller;
+    try {
+      const reference: UploadReference = await upload(file, question.id, {
+        onProgress: setProgress,
+        signal: controller.signal,
+      });
+      onSubmit(reference); // engine stores the reference and advances
+    } catch (e) {
+      if ((e as Error).name === "AbortError") {
+        setPhase("idle");
+        return;
+      }
+      setPhase("error");
+      setLocalError((e as Error).message);
+    } finally {
+      abortRef.current = null;
+    }
+  };
+
+  const cancel = () => abortRef.current?.abort();
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setDragging(false);
     const dropped = e.dataTransfer.files[0];
-    if (dropped) setFile(dropped);
+    if (dropped) choose(dropped);
   };
 
-  const submit = () => {
-    if (file && !busy) onSubmit(file);
-  };
-
-  const hasError = errors.length > 0;
+  const combinedErrors = localError
+    ? [{ rule: "upload", message: localError }, ...errors]
+    : errors;
 
   return (
     <>
@@ -58,11 +101,11 @@ export function FileUpload({
           data-dragging={dragging}
           role="button"
           tabIndex={0}
-          onClick={pick}
+          onClick={() => inputRef.current?.click()}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
-              pick();
+              inputRef.current?.click();
             }
           }}
           onDragOver={(e) => {
@@ -82,15 +125,19 @@ export function FileUpload({
             <div className="bb-upload__name">{file.name}</div>
             <div className="bb-upload__size">
               {formatBytes(file.size)}
-              {uploading ? " · Uploading…" : ""}
+              {busy ? ` · Uploading ${Math.round(progress * 100)}%` : ""}
             </div>
-            {uploading && (
+            {busy && (
               <div className="bb-upload__bar">
-                <span style={{ width: "60%" }} />
+                <span style={{ width: `${Math.round(progress * 100)}%` }} />
               </div>
             )}
           </div>
-          {!uploading && (
+          {busy ? (
+            <button type="button" className="bb-btn bb-btn--ghost" onClick={cancel}>
+              Cancel
+            </button>
+          ) : (
             <button type="button" className="bb-btn bb-btn--ghost" onClick={() => setFile(null)}>
               Remove
             </button>
@@ -101,24 +148,28 @@ export function FileUpload({
       <input
         ref={inputRef}
         type="file"
-        accept={readAccept(question.config)}
+        accept={accept}
         className="bb-visually-hidden"
         onChange={(e) => {
           const chosen = e.target.files?.[0];
-          if (chosen) setFile(chosen);
+          if (chosen) choose(chosen);
         }}
       />
 
-      <FieldErrors errors={errors} />
+      <FieldErrors errors={combinedErrors} />
 
-      <QuestionFooter
-        onContinue={file ? submit : undefined}
-        continueLabel={hasError ? "Try again" : "Continue"}
-        continueDisabled={file === null}
-        busy={busy}
-        canSkip={question.optional === true}
-        onSkip={onSkip}
-      />
+      <div className="bb-question__footer">
+        {file && !busy && (
+          <Button variant="primary" onClick={start}>
+            {phase === "error" ? "Try again" : "Upload & continue"}
+          </Button>
+        )}
+        {question.optional === true && !busy && (
+          <Button variant="ghost" onClick={onSkip}>
+            Skip
+          </Button>
+        )}
+      </div>
     </>
   );
 }

@@ -9,6 +9,7 @@ import { TopBar } from "@/components/shell/TopBar.tsx";
 import { ProgressBar } from "@/components/shell/ProgressBar.tsx";
 import { KeyboardHints } from "@/components/shell/KeyboardHints.tsx";
 import { QuestionView } from "@/components/questions/QuestionView.tsx";
+import { ArrowLeft } from "@/icons/index.tsx";
 
 interface ConversationLayoutProps {
   readonly state: EngineState;
@@ -21,7 +22,7 @@ export function ConversationLayout({ state, engine, onClose }: ConversationLayou
 
   return (
     <div className="bb-layout">
-      <TopBar canGoBack={state.canGoBack} onBack={() => engine.back()} onClose={onClose} />
+      <TopBar onClose={onClose} />
 
       <main className="bb-main">
         <div className="bb-content">
@@ -31,7 +32,15 @@ export function ConversationLayout({ state, engine, onClose }: ConversationLayou
       </main>
 
       <footer className="bb-footer">
-        <ProgressBar progress={state.progress} />
+        <div className="bb-footer__row">
+          {state.canGoBack && (
+            <button type="button" className="bb-back" onClick={() => engine.back()}>
+              <ArrowLeft />
+              <span>Back</span>
+            </button>
+          )}
+          <ProgressBar progress={state.progress} />
+        </div>
         <KeyboardHints showChoiceHints={showChoiceHints} canGoBack={state.canGoBack} />
       </footer>
     </div>

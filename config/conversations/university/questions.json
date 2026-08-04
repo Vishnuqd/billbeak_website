@@ -1,0 +1,112 @@
+{
+  "purpose": "University journey — engine FlowBundle subgraph.",
+  "uses": ["sh_decision_maker"],
+  "flow": {
+    "id": "university",
+    "version": 1,
+    "entry": "uni_role",
+    "nodes": {
+      "uni_role":    { "id": "uni_role",    "kind": "question", "questionId": "uni_role",           "transitions": [{ "to": "uni_stage" }] },
+      "uni_stage":   { "id": "uni_stage",   "kind": "question", "questionId": "uni_stage",          "transitions": [{ "to": "uni_decision" }] },
+      "uni_decision":{ "id": "uni_decision","kind": "question", "questionId": "sh_decision_maker",  "transitions": [{ "to": "uni_support" }] },
+      "uni_support": { "id": "uni_support", "kind": "question", "questionId": "uni_support",        "transitions": [{ "to": "uni_count" }] },
+      "uni_count":   { "id": "uni_count",   "kind": "question", "questionId": "uni_count",          "transitions": [{ "to": "uni_create" }] },
+      "uni_create":  { "id": "uni_create",  "kind": "question", "questionId": "uni_create",         "transitions": [{ "to": "uni_org" }] },
+      "uni_org":     { "id": "uni_org",     "kind": "question", "questionId": "uni_org",            "transitions": [{ "to": "uni_brief" }] },
+      "uni_brief":   { "id": "uni_brief",   "kind": "question", "questionId": "uni_brief",          "transitions": [{ "to": "uni_contact" }] },
+      "uni_contact": { "id": "uni_contact", "kind": "question", "questionId": "uni_contact",        "transitions": [{ "to": "uni_done" }] },
+      "uni_done":    { "id": "uni_done",    "kind": "terminal", "outcome": "university" }
+    }
+  },
+  "questions": {
+    "uni_role": {
+      "id": "uni_role",
+      "type": "text",
+      "prompt": "{firstName}, what best describes you?",
+      "optional": false,
+      "validations": [{ "rule": "minLength", "params": { "value": 2 } }, { "rule": "maxLength", "params": { "value": 160 } }],
+      "config": { "suggestedAnswer": "I work in university leadership, placements, faculty or student development.", "editableSuggestion": true, "enterToSubmit": true }
+    },
+    "uni_stage": {
+      "id": "uni_stage",
+      "type": "single_choice",
+      "prompt": "What timeframe are you working with?",
+      "optional": false,
+      "options": [
+        { "value": "current_semester", "label": "This semester" },
+        { "value": "next_semester", "label": "Next semester" },
+        { "value": "planning", "label": "Planning ahead" }
+      ],
+      "config": { "autoAdvance": true, "improvement": "journey_stage", "persistAs": "journeyStage" }
+    },
+    "uni_support": {
+      "id": "uni_support",
+      "type": "single_choice",
+      "prompt": "Who would you like Billbeak to support?",
+      "optional": false,
+      "options": [
+        { "value": "students", "label": "Students" },
+        { "value": "faculty", "label": "Faculty" },
+        { "value": "both", "label": "Students and faculty" },
+        { "value": "exploring", "label": "I'm still exploring" }
+      ],
+      "config": { "autoAdvance": true, "persistAs": "supportAudience" }
+    },
+    "uni_count": {
+      "id": "uni_count",
+      "type": "single_choice",
+      "prompt": "Approximately how many people could this involve?",
+      "optional": false,
+      "options": [
+        { "value": "lt_30", "label": "Fewer than 30" },
+        { "value": "30_75", "label": "30–75" },
+        { "value": "76_150", "label": "76–150" },
+        { "value": "151_300", "label": "151–300" },
+        { "value": "gt_300", "label": "More than 300" },
+        { "value": "not_sure", "label": "Not sure yet" }
+      ],
+      "config": { "autoAdvance": true, "persistAs": "audienceSize" }
+    },
+    "uni_create": {
+      "id": "uni_create",
+      "type": "textarea",
+      "prompt": "What are you hoping to create?",
+      "help": "You can mention the department, semester, student year, faculty group or expected timeline.",
+      "optional": false,
+      "validations": [{ "rule": "minLength", "params": { "value": 4 } }, { "rule": "maxLength", "params": { "value": 800 } }],
+      "config": { "suggestedAnswer": "We're exploring a student training or faculty development programme for our institution.", "editableSuggestion": true }
+    },
+    "uni_org": {
+      "id": "uni_org",
+      "type": "group",
+      "prompt": "Which institution are you with?",
+      "optional": false,
+      "config": {
+        "fields": [
+          { "name": "institutionName", "type": "text", "label": "University or institution name", "required": true, "persistAs": "organisationName" },
+          { "name": "department", "type": "text", "label": "Department", "required": false, "persistAs": "department" },
+          { "name": "cityCountry", "type": "text", "label": "City and country", "required": true, "persistAs": "location" },
+          { "name": "website", "type": "url", "label": "Institution website", "required": false, "validators": [{ "rule": "url" }], "persistAs": "companyUrl" }
+        ]
+      }
+    },
+    "uni_brief": {
+      "id": "uni_brief",
+      "type": "file",
+      "prompt": "Have a curriculum brief, proposal request or programme requirement?",
+      "optional": true,
+      "config": { "uploadLabel": "Upload document", "accept": ".pdf,.doc,.docx", "acceptLabel": "PDF, DOC or DOCX", "maxSizeMB": 10, "persistAs": "curriculumBrief" }
+    },
+    "uni_contact": {
+      "id": "uni_contact",
+      "extends": "sh_contact",
+      "overrides": {
+        "config": {
+          "submitLabel": "Discuss a university programme",
+          "audience": "institution",
+          "addFields": ["sharedFieldSets.organisationName", "sharedFieldSets.previousRelationship"]
+        }
+      }
+    }
+  }
+}

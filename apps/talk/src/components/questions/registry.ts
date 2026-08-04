@@ -13,6 +13,7 @@ import { SingleChoice } from "./SingleChoice.tsx";
 import { MultiChoice } from "./MultiChoice.tsx";
 import { TextField } from "./TextField.tsx";
 import { TextAreaField } from "./TextAreaField.tsx";
+import { GroupRenderer } from "./GroupRenderer.tsx";
 
 // Code-split the upload renderer: it carries drag-and-drop logic and is only
 // reached by flows that ask for a file. Loaded on demand behind a Suspense
@@ -34,6 +35,7 @@ const registry: Readonly<Record<string, QuestionRenderer>> = {
   number: TextField,
   textarea: TextAreaField,
   file: FileUpload,
+  group: GroupRenderer,
 };
 
 export function getRenderer(type: string): QuestionRenderer {

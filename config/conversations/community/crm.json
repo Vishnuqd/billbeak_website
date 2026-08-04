@@ -1,0 +1,26 @@
+{
+  "purpose": "CRM routing + scoring configuration for the Community journey. Nurture-oriented: this is a marketing/community list, not a sales pipeline.",
+  "journeyKey": "community",
+  "pipeline": "Community & Cohorts",
+  "ownerTeam": "community",
+  "priorityBase": "low",
+  "lifecycleStage": "subscriber",
+  "journeyStageField": "journeyStage",
+  "tags": ["community", "cohort", "fellowship", "individual", "nurture"],
+  "leadScore": {
+    "max": 100,
+    "inputs": [
+      { "signal": "interests", "type": "count", "perItem": 8, "cap": 40 },
+      { "signal": "interests", "type": "includesAny", "values": ["next_cohort", "fellowships"], "weight": 20 },
+      { "signal": "journeyStage", "weights": { "current_student": 12, "recent_graduate": 12, "early_career": 10, "career_switcher": 10, "experienced": 8, "something_else": 5 } }
+    ]
+  },
+  "routing": [
+    { "when": "interests includes 'fellowships'", "assignTo": "fellowships_list" },
+    { "when": "interests includes 'next_cohort'", "assignTo": "cohort_waitlist" }
+  ],
+  "automationHooks": {
+    "onCreate": ["emit_timeline:community_interest_registered", "subscribe_to_community_updates", "send_visitor_confirmation"],
+    "future": ["segment_by_interest", "invite_to_next_relevant_event"]
+  }
+}

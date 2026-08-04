@@ -1,0 +1,24 @@
+{
+  "purpose": "CRM routing for the Something Else fallback. Triage-first: a human reads it and re-routes to the correct pipeline.",
+  "journeyKey": "something-else",
+  "pipeline": "General Enquiries — Triage",
+  "ownerTeam": "front_desk",
+  "priorityBase": "medium",
+  "lifecycleStage": "lead",
+  "journeyStageField": null,
+  "tags": ["general", "triage", "fallback"],
+  "leadScore": {
+    "max": 100,
+    "inputs": [
+      { "signal": "message", "type": "length", "thresholds": [{ "min": 120, "score": 20 }, { "min": 40, "score": 10 }] },
+      { "signal": "organisationName", "type": "presence", "weight": 10 }
+    ]
+  },
+  "routing": [
+    { "when": "always", "action": "human_triage", "note": "Intentionally unautomated — a person classifies and reassigns to the right journey pipeline." }
+  ],
+  "automationHooks": {
+    "onCreate": ["emit_timeline:message_submitted", "notify_front_desk", "send_visitor_confirmation"],
+    "future": ["ai_classify_intent", "suggest_target_pipeline"]
+  }
+}

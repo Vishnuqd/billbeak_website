@@ -1,0 +1,11 @@
+{
+  "purpose": "Timeline (moat) lifecycle for the Something Else fallback journey.",
+  "journeyKey": "something-else",
+  "lifecycle": ["journey_started", "message_submitted", "triaged", "routed"],
+  "events": [
+    { "type": "journey_started", "label": "Journey Started", "trigger": "engine:conversation_started", "emitNow": true, "visibility": "private", "verification": "system" },
+    { "type": "message_submitted", "label": "Message Submitted", "trigger": "engine:conversation_completed", "emitNow": true, "visibility": "private", "verification": "system", "evidence": ["message"] },
+    { "type": "triaged", "label": "Triaged", "trigger": "crm:stage=triaged", "emitNow": false, "visibility": "private" },
+    { "type": "routed", "label": "Routed to the right team", "trigger": "crm:stage=routed", "emitNow": false, "visibility": "private" }
+  ]
+}

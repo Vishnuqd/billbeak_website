@@ -1,0 +1,32 @@
+{
+  "purpose": "Email/notification configuration for the Candidate journey.",
+  "journeyKey": "candidate",
+  "messages": [
+    {
+      "id": "internal_notification",
+      "type": "internal",
+      "recipientRule": "team:talent_engineering",
+      "subject": "New candidate profile — {firstName} ({journeyStage})",
+      "variables": ["firstName", "journeyStage", "opportunityNote", "linkedin", "cv", "portfolio", "leadScore"],
+      "delayMinutes": 0
+    },
+    {
+      "id": "visitor_confirmation",
+      "type": "visitor",
+      "recipientRule": "visitor:email",
+      "subject": "Your profile is with our Talent Engineering team, {firstName}",
+      "variables": ["firstName"],
+      "delayMinutes": 0,
+      "notes": "Must restate that representation is selective and not guaranteed."
+    },
+    {
+      "id": "review_status_followup",
+      "type": "visitor",
+      "recipientRule": "visitor:email",
+      "subject": "An update on your Billbeak profile",
+      "variables": ["firstName"],
+      "delayMinutes": 10080,
+      "condition": "no_status_change"
+    }
+  ]
+}

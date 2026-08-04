@@ -202,3 +202,36 @@ npm run preview     # serve the production build
 Production build is code-split (the upload renderer is a lazy chunk) and emits a
 self-contained static bundle deployable to the same S3/CDN as the marketing site
 under `/talk/`.
+
+---
+
+## Backend integration
+
+The placeholder adapters are gone — the app is fully wired to the FastAPI backend.
+
+- **Generated client.** `src/api/schema.d.ts` is generated from the backend's OpenAPI
+  (`npm run generate:api`) and consumed via `openapi-fetch` (`src/api/client.ts`).
+  No hand-written per-endpoint fetch wrappers.
+- **Config from backend.** `EngineProvider` loads the composed flow + questions from
+  `GET /configuration` — the old local placeholder flow was removed. A new journey
+  needs no frontend change.
+- **Durable persistence.** `engine/backend/sync.ts` mirrors the conversation to the API
+  as system of record: creates the Journey when the navigator is answered, POSTs each
+  answer, and POSTs completion — through a serial, **offline-tolerant queue** that
+  flushes on reconnect. localStorage still gives instant refresh/back-forward resume.
+- **Uploads.** `engine/adapters/upload.ts` uploads directly to `POST /journeys/{id}/uploads`
+  via XHR with real progress, cancel and retry; the returned reference is stored by the engine.
+- **Renderers added.** `group` (contact / organisation / profile / chips+text), phone with
+  country selector, editable suggested answers, `{firstName}` interpolation, the welcome
+  screen (intro.json) and the rich confirmation screen (what-happens-next + live timeline +
+  how-heard). Theme switched to the warm Billbeak palette (cream / brown / rust).
+
+### Run the full product
+```bash
+# 1. backend (see services/api/README.md)
+cd services/api && ./.venv/bin/uvicorn app.main:app --port 8000
+
+# 2. frontend
+cd apps/talk && npm install && npm run dev      # http://localhost:5173/talk/
+# point elsewhere with VITE_API_URL (see .env.example); CORS already allows :5173 and :4173
+```

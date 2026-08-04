@@ -22,7 +22,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-north-1
 
-      - name: Sync site to S3
+      - name: Sync marketing site to S3
+        # Publish only the marketing site (HTML + assets). The Let's Talk app
+        # (apps/) and backend (services/) deploy separately (Cloudflare Pages +
+        # Render) and must NOT be uploaded to the public bucket.
         run: |
           aws s3 sync . s3://billbeak.com \
             --region eu-north-1 \
@@ -31,7 +34,17 @@ jobs:
             --exclude ".github/*" \
             --exclude ".vscode/*" \
             --exclude ".DS_Store" \
-            --exclude "README.md"
+            --exclude "*.md" \
+            --exclude "Dockerfile" \
+            --exclude ".dockerignore" \
+            --exclude "apps/*" \
+            --exclude "services/*" \
+            --exclude "packages/*" \
+            --exclude "config/*" \
+            --exclude "node_modules/*" \
+            --exclude "*/node_modules/*" \
+            --exclude "*/.venv/*" \
+            --exclude "*.sqlite3"
 
           aws s3 cp index.html s3://billbeak.com/index.html \
             --region eu-north-1 \

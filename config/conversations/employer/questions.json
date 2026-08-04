@@ -1,0 +1,112 @@
+{
+  "purpose": "Employer journey — engine FlowBundle subgraph. Node chain + question definitions + branching. Composes shared questions via `uses` and `extends`.",
+  "uses": ["sh_decision_maker"],
+  "flow": {
+    "id": "employer",
+    "version": 1,
+    "entry": "emp_role",
+    "nodes": {
+      "emp_role":    { "id": "emp_role",    "kind": "question", "questionId": "emp_role",           "transitions": [{ "to": "emp_stage" }] },
+      "emp_stage":   { "id": "emp_stage",   "kind": "question", "questionId": "emp_stage",          "transitions": [{ "to": "emp_decision" }] },
+      "emp_decision":{ "id": "emp_decision","kind": "question", "questionId": "sh_decision_maker",  "transitions": [{ "to": "emp_size" }] },
+      "emp_size":    { "id": "emp_size",    "kind": "question", "questionId": "emp_size",           "transitions": [{ "to": "emp_need" }] },
+      "emp_need":    { "id": "emp_need",    "kind": "question", "questionId": "emp_need",           "transitions": [{ "to": "emp_org" }] },
+      "emp_org":     { "id": "emp_org",     "kind": "question", "questionId": "emp_org",            "transitions": [{ "to": "emp_brief" }] },
+      "emp_brief":   { "id": "emp_brief",   "kind": "question", "questionId": "emp_brief",          "transitions": [{ "to": "emp_contact" }] },
+      "emp_contact": { "id": "emp_contact", "kind": "question", "questionId": "emp_contact",        "transitions": [{ "to": "emp_done" }] },
+      "emp_done":    { "id": "emp_done",    "kind": "terminal", "outcome": "employer" }
+    }
+  },
+  "questions": {
+    "emp_role": {
+      "id": "emp_role",
+      "type": "text",
+      "prompt": "{firstName}, what best describes you?",
+      "optional": false,
+      "validations": [{ "rule": "minLength", "params": { "value": 2 } }, { "rule": "maxLength", "params": { "value": 160 } }],
+      "config": {
+        "suggestedAnswer": "I lead hiring and talent decisions for my organisation.",
+        "editableSuggestion": true,
+        "enterToSubmit": true,
+        "keyboardHint": "Press Enter ↵ — or edit first"
+      }
+    },
+    "emp_stage": {
+      "id": "emp_stage",
+      "type": "single_choice",
+      "prompt": "Where are you in the hiring process?",
+      "optional": false,
+      "options": [
+        { "value": "exploring", "label": "Just exploring" },
+        { "value": "planning", "label": "Planning ahead" },
+        { "value": "ready", "label": "Ready to move" },
+        { "value": "already_hiring", "label": "Already hiring now" }
+      ],
+      "config": { "autoAdvance": true, "improvement": "journey_stage", "persistAs": "journeyStage" }
+    },
+    "emp_size": {
+      "id": "emp_size",
+      "type": "single_choice",
+      "prompt": "How big is your organisation?",
+      "optional": false,
+      "options": [
+        { "value": "only_me", "label": "Only me" },
+        { "value": "lt_10", "label": "Fewer than 10" },
+        { "value": "10_100", "label": "10–100" },
+        { "value": "101_500", "label": "101–500" },
+        { "value": "501_1000", "label": "501–1,000" },
+        { "value": "1000_plus", "label": "1,000+" }
+      ],
+      "config": { "autoAdvance": true, "persistAs": "orgSize" }
+    },
+    "emp_need": {
+      "id": "emp_need",
+      "type": "textarea",
+      "prompt": "What are you hoping to hire for?",
+      "help": "Roles, number of hires, location and timeline are useful—but a rough answer is completely fine.",
+      "optional": false,
+      "validations": [{ "rule": "minLength", "params": { "value": 4 } }, { "rule": "maxLength", "params": { "value": 800 } }],
+      "config": {
+        "suggestedAnswer": "We're hiring for a role or team and would like to meet Billbeak Verified talent.",
+        "editableSuggestion": true
+      }
+    },
+    "emp_org": {
+      "id": "emp_org",
+      "type": "group",
+      "prompt": "Tell us where you work.",
+      "optional": false,
+      "config": {
+        "fields": [
+          { "name": "organisationName", "type": "text", "label": "Organisation name", "required": true, "persistAs": "organisationName" },
+          { "name": "companyUrl", "type": "url", "label": "Company website or LinkedIn page", "required": false, "validators": [{ "rule": "url" }], "persistAs": "companyUrl" }
+        ]
+      }
+    },
+    "emp_brief": {
+      "id": "emp_brief",
+      "type": "file",
+      "prompt": "Already have a role brief?",
+      "help": "Upload it here and our Talent Engineering team can review it before contacting you.",
+      "optional": true,
+      "config": {
+        "uploadLabel": "Upload role brief",
+        "accept": ".pdf,.doc,.docx",
+        "acceptLabel": "PDF, DOC or DOCX",
+        "maxSizeMB": 10,
+        "persistAs": "roleBrief"
+      }
+    },
+    "emp_contact": {
+      "id": "emp_contact",
+      "extends": "sh_contact",
+      "overrides": {
+        "config": {
+          "submitLabel": "Send my hiring enquiry",
+          "audience": "organisation",
+          "addFields": ["sharedFieldSets.organisationName", "sharedFieldSets.previousRelationship"]
+        }
+      }
+    }
+  }
+}

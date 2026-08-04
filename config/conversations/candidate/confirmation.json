@@ -1,0 +1,15 @@
+{
+  "purpose": "Post-submit experience for the Candidate journey. Reinforces the selective-representation expectation set at submission.",
+  "journeyKey": "candidate",
+  "title": "Your profile has been submitted for review.",
+  "body": "Our Talent Engineering team will review your experience against current and upcoming opportunities. We'll contact you when there is a relevant next step.",
+  "whatHappensNext": [
+    { "step": 1, "label": "Talent Engineering reviews", "detail": "We review your experience against current and upcoming opportunities." },
+    { "step": 2, "label": "We reach out if there's a fit", "detail": "Representation is selective — we contact you when there's a relevant next step." },
+    { "step": 3, "label": "Your Talent Passport", "detail": "If represented, your verified work story becomes your Talent Passport." }
+  ],
+  "timelinePreview": ["journey_started", "profile_submitted", "talent_engineering_review"],
+  "primaryCta": { "label": "Explore the Talent Passport →", "href": "/talent-passport" },
+  "recommendedNextAction": { "label": "Understand how representation works", "href": "/talent-passport#how-it-works" },
+  "howHeard": { "questionId": "sh_how_heard" }
+}

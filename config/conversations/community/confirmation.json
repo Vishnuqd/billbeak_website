@@ -1,0 +1,15 @@
+{
+  "purpose": "Post-submit experience for the Community journey.",
+  "journeyKey": "community",
+  "title": "You're on our radar.",
+  "body": "We'll share relevant cohorts, fellowships, workshops and community opportunities using the details you provided.",
+  "whatHappensNext": [
+    { "step": 1, "label": "We match your interests", "detail": "We line up the cohorts, fellowships and events that fit what you chose." },
+    { "step": 2, "label": "You hear from us", "detail": "We reach out on your preferred channel when something relevant opens." },
+    { "step": 3, "label": "You join in", "detail": "Step into the Billbeak community whenever you're ready." }
+  ],
+  "timelinePreview": ["journey_started", "community_interest_registered", "joined_community"],
+  "primaryCta": { "label": "Explore the Billbeak Community →", "href": "/community" },
+  "recommendedNextAction": { "label": "See upcoming cohorts", "href": "/community#cohorts" },
+  "howHeard": { "questionId": "sh_how_heard" }
+}

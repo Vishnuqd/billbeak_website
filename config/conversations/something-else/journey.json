@@ -1,0 +1,19 @@
+{
+  "key": "something-else",
+  "name": "Something else",
+  "description": "A visitor wants to speak with Billbeak about something not listed. A graceful fallback that always reaches a human.",
+  "icon": "message-circle",
+  "theme": { "palette": "billbeak-warm", "accent": "rust" },
+  "priority": 7,
+  "estimatedSeconds": 40,
+  "supportedDevices": ["desktop", "tablet", "mobile"],
+  "entryRoute": "/talk",
+  "entryNode": "se_note",
+  "completionRoute": "/talk/complete/something-else",
+  "journeyType": "fallback",
+  "audience": "unknown",
+  "version": "1.0.0",
+  "metadata": {
+    "persists": ["journeyType", "preferredContact", "leadSource", "leadSourceDetail", "version", "createdDate", "updatedDate"]
+  }
+}

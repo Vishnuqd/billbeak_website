@@ -1,0 +1,15 @@
+{
+  "purpose": "Post-submit experience for the Corporate Training journey.",
+  "journeyKey": "corporate",
+  "title": "Your programme enquiry has reached the right team.",
+  "body": "We'll review your organisation, audience and capability needs before contacting you.",
+  "whatHappensNext": [
+    { "step": 1, "label": "We review your needs", "detail": "We look at your team, capability areas and any brief you shared." },
+    { "step": 2, "label": "Discovery conversation", "detail": "We reach out on your preferred channel to shape the right format." },
+    { "step": 3, "label": "A tailored proposal", "detail": "We propose a programme designed around your outcome." }
+  ],
+  "timelinePreview": ["journey_started", "programme_enquiry_submitted", "discovery_scheduled"],
+  "primaryCta": { "label": "Explore Corporate Programmes →", "href": "/corporate" },
+  "recommendedNextAction": { "label": "See programme formats", "href": "/corporate#programmes" },
+  "howHeard": { "questionId": "sh_how_heard" }
+}

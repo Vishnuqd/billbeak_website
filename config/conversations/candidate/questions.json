@@ -1,0 +1,68 @@
+{
+  "purpose": "Candidate journey — engine FlowBundle subgraph. Q5 uses a `group` requiring at least one profile (LinkedIn or CV) and carries the selective-representation disclaimer.",
+  "uses": [],
+  "flow": {
+    "id": "candidate",
+    "version": 1,
+    "entry": "cand_desc",
+    "nodes": {
+      "cand_desc":    { "id": "cand_desc",    "kind": "question", "questionId": "cand_desc",    "transitions": [{ "to": "cand_looking" }] },
+      "cand_looking": { "id": "cand_looking", "kind": "question", "questionId": "cand_looking", "transitions": [{ "to": "cand_profile" }] },
+      "cand_profile": { "id": "cand_profile", "kind": "question", "questionId": "cand_profile", "transitions": [{ "to": "cand_contact" }] },
+      "cand_contact": { "id": "cand_contact", "kind": "question", "questionId": "cand_contact", "transitions": [{ "to": "cand_done" }] },
+      "cand_done":    { "id": "cand_done",    "kind": "terminal", "outcome": "candidate" }
+    }
+  },
+  "questions": {
+    "cand_desc": {
+      "id": "cand_desc",
+      "type": "single_choice",
+      "prompt": "{firstName}, what best describes you right now?",
+      "optional": false,
+      "options": [
+        { "value": "student_or_grad", "label": "Student or recent graduate" },
+        { "value": "early_career", "label": "Early-career professional" },
+        { "value": "experienced", "label": "Experienced professional" },
+        { "value": "career_switcher", "label": "Career switcher" },
+        { "value": "returning", "label": "Returning to work" },
+        { "value": "open", "label": "Open to the right opportunity" }
+      ],
+      "config": { "autoAdvance": true, "persistAs": "journeyStage" }
+    },
+    "cand_looking": {
+      "id": "cand_looking",
+      "type": "textarea",
+      "prompt": "What kind of opportunity are you looking for?",
+      "help": "You can mention your preferred role, function, industry, location and whether you are open to remote or relocation.",
+      "optional": false,
+      "validations": [{ "rule": "minLength", "params": { "value": 4 } }, { "rule": "maxLength", "params": { "value": 800 } }],
+      "config": { "suggestedAnswer": "I'm looking for opportunities that match my experience and strengths.", "editableSuggestion": true }
+    },
+    "cand_profile": {
+      "id": "cand_profile",
+      "type": "group",
+      "prompt": "Help us see more than a job title.",
+      "help": "Add at least one profile so our Talent Engineering team can understand your experience.",
+      "optional": false,
+      "config": {
+        "requireAtLeast": { "fields": ["linkedin", "cv"], "count": 1, "message": "Add your LinkedIn or a CV — one is enough." },
+        "disclaimer": "Talent representation through Billbeak is selective. Submitting your profile does not guarantee representation, an interview or a job. Our Talent Engineering team will review your information and contact you when there is a relevant next step.",
+        "fields": [
+          { "name": "linkedin", "type": "url", "label": "LinkedIn profile", "placeholder": "linkedin.com/in/yourname", "required": false, "validators": [{ "rule": "url" }], "persistAs": "linkedin" },
+          { "name": "cv", "type": "file", "label": "Upload your CV", "accept": ".pdf,.doc,.docx", "acceptLabel": "PDF, DOC or DOCX", "maxSizeMB": 10, "required": false, "persistAs": "cv" },
+          { "name": "portfolio", "type": "url", "label": "Portfolio, GitHub or work samples", "placeholder": "Paste a link", "required": false, "validators": [{ "rule": "url" }], "persistAs": "portfolio" }
+        ]
+      }
+    },
+    "cand_contact": {
+      "id": "cand_contact",
+      "extends": "sh_contact",
+      "overrides": {
+        "config": {
+          "submitLabel": "Submit my talent profile",
+          "audience": "individual"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "purpose": "CRM routing + scoring configuration for the Candidate journey. Note: representation is selective — score reflects reviewability, not a promise.",
+  "journeyKey": "candidate",
+  "pipeline": "Talent Engineering — Candidate Review",
+  "ownerTeam": "talent_engineering",
+  "priorityBase": "medium",
+  "lifecycleStage": "lead",
+  "journeyStageField": "journeyStage",
+  "tags": ["candidate", "talent", "individual", "review"],
+  "leadScore": {
+    "max": 100,
+    "inputs": [
+      { "signal": "cv", "type": "presence", "weight": 25 },
+      { "signal": "linkedin", "type": "presence", "weight": 20 },
+      { "signal": "portfolio", "type": "presence", "weight": 15 },
+      { "signal": "journeyStage", "weights": { "experienced": 20, "early_career": 15, "career_switcher": 12, "returning": 12, "open": 10, "student_or_grad": 10 } }
+    ]
+  },
+  "routing": [
+    { "when": "portfolio present", "assignTo": "portfolio_review_queue" },
+    { "when": "journeyStage == 'experienced'", "assignTo": "senior_talent_pod" }
+  ],
+  "automationHooks": {
+    "onCreate": ["emit_timeline:profile_submitted", "queue_talent_engineering_review", "send_visitor_confirmation"],
+    "future": ["parse_cv", "enrich_from_linkedin", "seed_talent_passport", "match_to_open_roles"]
+  }
+}

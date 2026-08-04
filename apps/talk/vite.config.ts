@@ -5,9 +5,11 @@ import { fileURLToPath } from "node:url";
 const dir = fileURLToPath(new URL(".", import.meta.url));
 const fromHere = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 
-// The app is served under billbeak.com/talk, so assets resolve against /talk/.
+// Base path is deploy-dependent:
+//  • local dev / S3 subpath  → "/talk/" (default)
+//  • Cloudflare Pages (served at a domain root, e.g. talk.billbeak.com) → set VITE_BASE=/
 export default defineConfig({
-  base: "/talk/",
+  base: process.env.VITE_BASE ?? "/talk/",
   plugins: [react()],
   resolve: {
     alias: {

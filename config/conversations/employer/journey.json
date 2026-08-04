@@ -1,0 +1,30 @@
+{
+  "key": "employer",
+  "name": "Hire verified talent",
+  "description": "An organisation wants to access people with verified work evidence and meet Billbeak Verified talent.",
+  "icon": "briefcase",
+  "theme": { "palette": "billbeak-warm", "accent": "rust", "note": "Warm cream background, dark-brown type, rust-red highlights. App theming extension — see README." },
+  "priority": 1,
+  "estimatedSeconds": 75,
+  "supportedDevices": ["desktop", "tablet", "mobile"],
+  "entryRoute": "/talk",
+  "entryNode": "emp_role",
+  "completionRoute": "/talk/complete/employer",
+  "journeyType": "b2b",
+  "audience": "organisation",
+  "version": "1.0.0",
+  "metadata": {
+    "persists": [
+      "journeyType",
+      "journeyStage",
+      "decisionMaker",
+      "preferredContact",
+      "previousRelationship",
+      "leadSource",
+      "leadSourceDetail",
+      "version",
+      "createdDate",
+      "updatedDate"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "purpose": "Post-submit experience for the Employer journey. Replaces a generic thank-you: states what happens next, previews the timeline, offers a CTA and a recommended next action, and hosts the optional 'how did you hear' question.",
+  "journeyKey": "employer",
+  "title": "Your hiring enquiry is with our Talent Engineering team.",
+  "body": "We'll review what you shared and continue the conversation using the contact details provided.",
+  "whatHappensNext": [
+    { "step": 1, "label": "We review your enquiry", "detail": "Our Talent Engineering team reviews your role, timeline and any brief you shared." },
+    { "step": 2, "label": "We reach out to align", "detail": "We contact you on your preferred channel to confirm the requirement." },
+    { "step": 3, "label": "Verified talent introduced", "detail": "We introduce candidates with verified work evidence that fit the role." }
+  ],
+  "timelinePreview": ["journey_started", "hiring_enquiry_submitted", "discovery_scheduled"],
+  "primaryCta": { "label": "Explore Billbeak Verified Talent →", "href": "/talent" },
+  "recommendedNextAction": { "label": "See how verification works", "href": "/talent#verification" },
+  "howHeard": { "questionId": "sh_how_heard" }
+}

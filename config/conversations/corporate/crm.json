@@ -1,0 +1,29 @@
+{
+  "purpose": "CRM routing + scoring configuration for the Corporate Training journey.",
+  "journeyKey": "corporate",
+  "pipeline": "Corporate Programmes",
+  "ownerTeam": "corporate_programmes",
+  "priorityBase": "high",
+  "lifecycleStage": "lead",
+  "journeyStageField": "journeyStage",
+  "tags": ["corporate", "capability", "b2b", "programme"],
+  "leadScore": {
+    "max": 100,
+    "inputs": [
+      { "signal": "journeyStage", "weights": { "immediate": 40, "planning": 20, "exploring": 8 } },
+      { "signal": "orgSize", "weights": { "1000_plus": 22, "501_1000": 18, "101_500": 14, "10_100": 8, "lt_10": 4 } },
+      { "signal": "decisionMaker", "weights": { "decision_maker": 20, "evaluator": 12, "information_gathering": 5, "someone_else": 3 } },
+      { "signal": "programmeBrief", "type": "presence", "weight": 12 },
+      { "signal": "capabilityAreas", "type": "count", "perItem": 2, "cap": 6 }
+    ]
+  },
+  "routing": [
+    { "when": "orgSize in ['501_1000','1000_plus']", "assignTo": "enterprise_programmes_pod" },
+    { "when": "journeyStage == 'immediate'", "priority": "urgent" },
+    { "when": "capabilityAreas includes 'senior_leadership'", "assignTo": "leadership_practice" }
+  ],
+  "automationHooks": {
+    "onCreate": ["emit_timeline:programme_enquiry_submitted", "notify_internal", "send_visitor_confirmation"],
+    "future": ["enrich_company_from_domain", "recommend_programme_template", "estimate_cohort_size"]
+  }
+}

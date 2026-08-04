@@ -1,0 +1,27 @@
+{
+  "purpose": "CRM routing + scoring configuration for the Join Billbeak journey. Routes to internal hiring, not sales.",
+  "journeyKey": "join",
+  "pipeline": "Billbeak Team — Inbound Interest",
+  "ownerTeam": "people_ops",
+  "priorityBase": "medium",
+  "lifecycleStage": "lead",
+  "journeyStageField": "interestArea",
+  "tags": ["join-billbeak", "internal-hiring", "individual"],
+  "leadScore": {
+    "max": 100,
+    "inputs": [
+      { "signal": "cv", "type": "presence", "weight": 25 },
+      { "signal": "linkedin", "type": "presence", "weight": 20 },
+      { "signal": "portfolio", "type": "presence", "weight": 20 },
+      { "signal": "interestArea", "weights": { "product_ai_tech": 15, "talent_engineering": 15, "partnerships_growth": 12, "learning_programmes": 10, "marketing_content": 10, "operations": 8, "open": 6 } }
+    ]
+  },
+  "routing": [
+    { "when": "interestArea == 'open'", "assignTo": "general_talent_pool" },
+    { "when": "interestArea != 'open'", "assignTo": "area_hiring_lead:{interestArea}" }
+  ],
+  "automationHooks": {
+    "onCreate": ["emit_timeline:interest_submitted", "notify_people_ops", "send_visitor_confirmation"],
+    "future": ["route_to_area_owner", "parse_cv"]
+  }
+}

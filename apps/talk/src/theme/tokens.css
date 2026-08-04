@@ -1,54 +1,55 @@
 /*
- * Design tokens. Dark-first: :root carries the dark palette; [data-theme="light"]
- * overrides. The page is meant to disappear — near-monochrome, one restrained
- * accent, generous space, large type. No gradients, no glass, minimal shadow.
+ * Design tokens — Billbeak warm palette (per the "Let's Talk" spec): warm cream
+ * background, dark-brown typography, rust-red highlights. The warm light theme is
+ * the DEFAULT (:root); a warm-dark variant is available via the theme toggle.
+ * The page should feel like a natural extension of the Billbeak homepage.
  */
 
 :root,
-:root[data-theme="dark"] {
-  --bg: #0a0a0b;
-  --bg-elevated: #101012;
-  --surface: #141416;
-  --surface-hover: #1a1a1d;
-  --surface-active: #202024;
+:root[data-theme="light"] {
+  --bg: #f6f1e7;
+  --bg-elevated: #fffdf8;
+  --surface: #fffdf8;
+  --surface-hover: #f0e9da;
+  --surface-active: #e8dfcc;
 
-  --border: rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --border-focus: rgba(255, 255, 255, 0.85);
+  --border: rgba(58, 41, 27, 0.13);
+  --border-strong: rgba(58, 41, 27, 0.24);
+  --border-focus: #b5411f;
 
-  --text: #f4f4f2;
-  --text-dim: rgba(244, 244, 242, 0.6);
-  --text-faint: rgba(244, 244, 242, 0.36);
+  --text: #2b2018;
+  --text-dim: rgba(43, 32, 24, 0.66);
+  --text-faint: rgba(43, 32, 24, 0.42);
 
-  --accent: #f4f4f2; /* editorial: the accent is near-white ink */
-  --accent-ink: #0a0a0b; /* text on the accent fill */
-  --danger: #ff6b6b;
-  --success: #7ee0a8;
+  --accent: #b5411f; /* rust */
+  --accent-ink: #fff9f1;
+  --danger: #b23120;
+  --success: #2f7d4f;
 
-  --overlay: rgba(0, 0, 0, 0.6);
+  --overlay: rgba(43, 32, 24, 0.4);
 }
 
-:root[data-theme="light"] {
-  --bg: #faf9f7;
-  --bg-elevated: #ffffff;
-  --surface: #ffffff;
-  --surface-hover: #f4f3f0;
-  --surface-active: #ecebe7;
+:root[data-theme="dark"] {
+  --bg: #000000; /* pure black */
+  --bg-elevated: #0e0e0f;
+  --surface: #141416;
+  --surface-hover: #1b1b1e;
+  --surface-active: #232327;
 
-  --border: rgba(0, 0, 0, 0.1);
-  --border-strong: rgba(0, 0, 0, 0.18);
-  --border-focus: rgba(0, 0, 0, 0.8);
+  --border: rgba(255, 255, 255, 0.11);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --border-focus: #e0673f;
 
-  --text: #17171a;
-  --text-dim: rgba(23, 23, 26, 0.62);
-  --text-faint: rgba(23, 23, 26, 0.4);
+  --text: #f4f1ea;
+  --text-dim: rgba(244, 241, 234, 0.66);
+  --text-faint: rgba(244, 241, 234, 0.4);
 
-  --accent: #17171a;
-  --accent-ink: #ffffff;
-  --danger: #d23b3b;
-  --success: #1f8f57;
+  --accent: #e0673f; /* rust, lifted for dark */
+  --accent-ink: #000000;
+  --danger: #ef6b52;
+  --success: #7ee0a8;
 
-  --overlay: rgba(20, 20, 20, 0.35);
+  --overlay: rgba(0, 0, 0, 0.7);
 }
 
 :root {
@@ -66,7 +67,7 @@
   --leading-tight: 1.15;
   --leading-normal: 1.5;
 
-  /* Space scale (8pt-ish) */
+  /* Space scale */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -84,13 +85,13 @@
   --radius-pill: 999px;
 
   /* Layout */
-  --measure: 680px; /* max content width */
+  --measure: 680px;
 
   /* Motion */
   --dur-fast: 150ms;
   --dur: 250ms;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Shadow — used sparingly */
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.18);
+  /* Shadow */
+  --shadow: 0 1px 2px rgba(58, 41, 27, 0.12), 0 8px 24px rgba(58, 41, 27, 0.1);
 }

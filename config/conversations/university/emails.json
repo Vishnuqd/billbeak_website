@@ -1,0 +1,40 @@
+{
+  "purpose": "Email/notification configuration for the University journey.",
+  "journeyKey": "university",
+  "messages": [
+    {
+      "id": "internal_notification",
+      "type": "internal",
+      "recipientRule": "team:academy_partnerships",
+      "subject": "New university enquiry — {organisationName} ({journeyStage})",
+      "variables": ["firstName", "organisationName", "department", "supportAudience", "audienceSize", "journeyStage", "decisionMaker", "location", "curriculumBrief", "leadScore"],
+      "delayMinutes": 0
+    },
+    {
+      "id": "visitor_confirmation",
+      "type": "visitor",
+      "recipientRule": "visitor:email",
+      "subject": "Billbeak Academy has received your enquiry, {firstName}",
+      "variables": ["firstName", "organisationName"],
+      "delayMinutes": 0
+    },
+    {
+      "id": "followup",
+      "type": "visitor",
+      "recipientRule": "visitor:email",
+      "subject": "Next steps for {organisationName} with Billbeak Academy",
+      "variables": ["firstName", "organisationName"],
+      "delayMinutes": 1440,
+      "condition": "no_reply"
+    },
+    {
+      "id": "owner_reminder",
+      "type": "internal",
+      "recipientRule": "owner",
+      "subject": "Reminder: university enquiry from {organisationName} awaiting first response",
+      "variables": ["organisationName", "leadScore", "journeyStage"],
+      "delayMinutes": 2880,
+      "condition": "unactioned"
+    }
+  ]
+}

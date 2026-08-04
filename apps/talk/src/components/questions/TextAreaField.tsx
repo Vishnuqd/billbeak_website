@@ -5,6 +5,7 @@
 
 import { useRef, useState } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
+import { interpolate } from "@/lib/interpolate.ts";
 import { FieldErrors } from "./FieldErrors.tsx";
 import { QuestionFooter } from "./QuestionFooter.tsx";
 import type { QuestionRendererProps } from "./types.ts";
@@ -16,12 +17,17 @@ function toText(value: QuestionRendererProps["initialValue"]): string {
 export function TextAreaField({
   question,
   initialValue,
+  tokens,
   busy,
   errors,
   onSubmit,
   onSkip,
 }: QuestionRendererProps) {
-  const [value, setValue] = useState<string>(() => toText(initialValue));
+  const suggested = question.config?.["suggestedAnswer"];
+  const [value, setValue] = useState<string>(() => {
+    if (initialValue !== undefined) return toText(initialValue);
+    return typeof suggested === "string" ? interpolate(suggested, tokens) : "";
+  });
   const ref = useRef<HTMLTextAreaElement>(null);
 
   const grow = (el: HTMLTextAreaElement) => {

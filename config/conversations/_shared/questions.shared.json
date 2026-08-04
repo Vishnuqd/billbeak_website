@@ -1,0 +1,171 @@
+{
+  "purpose": "Reusable question definitions composed into journeys by id via `uses` / `extends`. Single source of truth for the root (name + navigator), the shared B2B qualifier (decision maker), the shared contact screen (base), and the post-submit 'how did you hear' question. No copy-paste: journeys reference these ids.",
+  "questions": {
+    "sh_name": {
+      "id": "sh_name",
+      "type": "text",
+      "prompt": "Hi 👋 What should we call you?",
+      "optional": false,
+      "validations": [
+        { "rule": "minLength", "params": { "value": 1 }, "message": "Please tell us your name." },
+        { "rule": "maxLength", "params": { "value": 60 } }
+      ],
+      "config": {
+        "placeholder": "Your first name",
+        "autoComplete": "given-name",
+        "enterToSubmit": true,
+        "capturesToken": "firstName",
+        "keyboardHint": "Press Enter ↵"
+      }
+    },
+
+    "sh_navigator": {
+      "id": "sh_navigator",
+      "type": "single_choice",
+      "prompt": "{firstName}, what brings you to Billbeak today?",
+      "help": "Organised around what you want to accomplish — not Billbeak's internal divisions.",
+      "optional": false,
+      "options": [
+        { "value": "hire_talent", "label": "Hire verified talent" },
+        { "value": "build_capability", "label": "Build capability in my organisation" },
+        { "value": "university", "label": "Bring Billbeak to a university" },
+        { "value": "join_community", "label": "Join a programme or community" },
+        { "value": "apply_opportunities", "label": "Apply for opportunities" },
+        { "value": "explore_joining", "label": "Explore joining Billbeak" },
+        { "value": "something_else", "label": "Something else" }
+      ],
+      "config": {
+        "autoAdvance": true,
+        "groups": [
+          { "label": "For an organisation", "options": ["hire_talent", "build_capability", "university"] },
+          { "label": "For myself", "options": ["join_community", "apply_opportunities", "explore_joining"] }
+        ],
+        "trailing": ["something_else"],
+        "optionDescriptions": {
+          "hire_talent": "I want to access people with verified work evidence.",
+          "build_capability": "I'm exploring one of Billbeak's signature corporate programmes.",
+          "university": "I'm looking for student training, faculty development or both.",
+          "join_community": "I want to hear about cohorts, fellowships, workshops or the Billbeak community.",
+          "apply_opportunities": "I want to be considered for jobs represented through Billbeak.",
+          "explore_joining": "I'm interested in working with the Billbeak team."
+        }
+      }
+    },
+
+    "sh_decision_maker": {
+      "id": "sh_decision_maker",
+      "type": "single_choice",
+      "prompt": "{firstName}, what's your role in this decision?",
+      "help": "This just helps us route you to the right person — no wrong answer.",
+      "optional": false,
+      "options": [
+        { "value": "decision_maker", "label": "I make this decision" },
+        { "value": "evaluator", "label": "I evaluate and recommend" },
+        { "value": "information_gathering", "label": "I'm gathering information" },
+        { "value": "someone_else", "label": "Someone else decides" }
+      ],
+      "config": { "autoAdvance": true, "improvement": "decision_maker", "persistAs": "decisionMaker" }
+    },
+
+    "sh_contact": {
+      "id": "sh_contact",
+      "type": "group",
+      "prompt": "Where should we continue this conversation?",
+      "help": "Share the details our team should use to respond to this enquiry.",
+      "optional": false,
+      "config": {
+        "submitLabel": "Send my message",
+        "audience": "individual",
+        "consentCopy": "By submitting, you agree that Billbeak may contact you about this enquiry. We will not sell or share your contact information for unrelated marketing.",
+        "fields": [
+          {
+            "name": "email",
+            "type": "email",
+            "label": "Email address",
+            "placeholder": "you@email.com",
+            "required": true,
+            "validators": [{ "rule": "email" }],
+            "persistAs": "email"
+          },
+          {
+            "name": "phone",
+            "type": "tel",
+            "label": "Mobile or WhatsApp number",
+            "placeholder": "+91 98765 43210",
+            "required": false,
+            "countryCode": { "auto": true, "editable": true, "default": "IN" },
+            "validators": [{ "rule": "phone" }],
+            "persistAs": "phone"
+          },
+          {
+            "name": "preferredContact",
+            "type": "single_select",
+            "label": "How should we reach you?",
+            "required": true,
+            "options": [
+              { "value": "email", "label": "Email" },
+              { "value": "whatsapp", "label": "WhatsApp" },
+              { "value": "phone", "label": "Phone" },
+              { "value": "either", "label": "Either" }
+            ],
+            "improvement": "preferred_contact",
+            "persistAs": "preferredContact"
+          },
+          {
+            "name": "consent",
+            "type": "consent",
+            "required": true,
+            "persistAs": "consent"
+          }
+        ]
+      }
+    },
+
+    "sh_how_heard": {
+      "id": "sh_how_heard",
+      "type": "single_choice",
+      "prompt": "One last thing—how did you find Billbeak?",
+      "optional": true,
+      "options": [
+        { "value": "linkedin", "label": "LinkedIn" },
+        { "value": "referral", "label": "A colleague or friend" },
+        { "value": "university", "label": "University or institution" },
+        { "value": "event", "label": "Event or workshop" },
+        { "value": "search", "label": "Google or online search" },
+        { "value": "social", "label": "Social media" },
+        { "value": "other", "label": "Other" }
+      ],
+      "config": {
+        "autoAdvance": true,
+        "saveImmediately": true,
+        "context": "confirmation",
+        "persistAs": "leadSourceDetail",
+        "note": "Asked AFTER submission, on the confirmation screen, so it can never block the lead."
+      }
+    }
+  },
+
+  "sharedFieldSets": {
+    "previousRelationship": {
+      "name": "previousRelationship",
+      "type": "single_select",
+      "label": "Have you spoken with Billbeak before?",
+      "required": false,
+      "options": [
+        { "value": "no", "label": "No" },
+        { "value": "yes", "label": "Yes" },
+        { "value": "not_sure", "label": "Not sure" }
+      ],
+      "improvement": "previous_relationship",
+      "persistAs": "previousRelationship"
+    },
+    "organisationName": {
+      "name": "organisationName",
+      "type": "text",
+      "label": "Organisation or institution name",
+      "required": true,
+      "prefillFrom": "organisationName",
+      "persistAs": "organisationName"
+    }
+  }
+}

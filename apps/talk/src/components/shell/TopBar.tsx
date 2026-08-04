@@ -1,24 +1,21 @@
-import { ArrowLeft, Close } from "@/icons/index.tsx";
+import { Close } from "@/icons/index.tsx";
 import { ThemeToggle } from "./ThemeToggle.tsx";
 
 interface TopBarProps {
-  readonly canGoBack: boolean;
-  readonly onBack: () => void;
   readonly onClose: () => void;
 }
 
-export function TopBar({ canGoBack, onBack, onClose }: TopBarProps) {
+export function TopBar({ onClose }: TopBarProps) {
   return (
     <header className="bb-topbar">
       <div className="bb-topbar__slot">
-        {canGoBack ? (
-          <button type="button" className="bb-iconbtn" onClick={onBack}>
-            <ArrowLeft />
-            <span>Back</span>
-          </button>
-        ) : (
-          <span className="bb-wordmark">Billbeak</span>
-        )}
+        <img
+          className="bb-logo"
+          src={`${import.meta.env.BASE_URL}billbeak-logo.png`}
+          alt="Billbeak"
+          width={106}
+          height={38}
+        />
       </div>
 
       <div className="bb-topbar__slot bb-topbar__slot--right">

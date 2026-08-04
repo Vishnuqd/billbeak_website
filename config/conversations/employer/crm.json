@@ -1,0 +1,29 @@
+{
+  "purpose": "CRM routing + scoring configuration for the Employer journey. Configuration only — no implementation. Billbeak owns Person/Lead/Consent; this maps the lead outward (see ARCHITECTURE §12).",
+  "journeyKey": "employer",
+  "pipeline": "Talent Engineering — Hiring",
+  "ownerTeam": "talent_engineering",
+  "priorityBase": "high",
+  "lifecycleStage": "lead",
+  "journeyStageField": "journeyStage",
+  "tags": ["hiring", "verified-talent", "b2b", "employer"],
+  "leadScore": {
+    "max": 100,
+    "inputs": [
+      { "signal": "journeyStage", "weights": { "already_hiring": 40, "ready": 30, "planning": 15, "exploring": 5 } },
+      { "signal": "orgSize", "weights": { "1000_plus": 20, "501_1000": 18, "101_500": 14, "10_100": 10, "lt_10": 5, "only_me": 2 } },
+      { "signal": "decisionMaker", "weights": { "decision_maker": 20, "evaluator": 12, "information_gathering": 5, "someone_else": 3 } },
+      { "signal": "roleBrief", "type": "presence", "weight": 15 },
+      { "signal": "previousRelationship", "weights": { "yes": 5 } }
+    ]
+  },
+  "routing": [
+    { "when": "orgSize in ['501_1000','1000_plus']", "assignTo": "enterprise_pod" },
+    { "when": "journeyStage == 'already_hiring'", "priority": "urgent" },
+    { "when": "decisionMaker == 'information_gathering'", "priority": "nurture" }
+  ],
+  "automationHooks": {
+    "onCreate": ["emit_timeline:hiring_enquiry_submitted", "notify_internal", "send_visitor_confirmation"],
+    "future": ["enrich_company_from_domain", "auto_suggest_discovery_slots", "match_verified_talent_pool"]
+  }
+}

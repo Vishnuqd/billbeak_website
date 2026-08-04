@@ -1,0 +1,56 @@
+{
+  "id": "billbeak-lets-talk",
+  "version": "1.0.0",
+  "description": "Composition manifest for the Billbeak 'Let's Talk' experience. A loader stitches the shared root (name + navigator) and the shared tail (contact) onto each journey's node chain to produce ONE engine FlowBundle. The engine stays generic; everything here is data.",
+  "engine": "@billbeak/conversation-engine",
+  "masterFlow": {
+    "id": "lets_talk",
+    "version": 1,
+    "entry": "sh_name",
+    "note": "Composed at load time. entry = shared name node; sh_name → sh_navigator → (branch by q_navigator) → each journey entry."
+  },
+  "shared": {
+    "intro": "_shared/intro.json",
+    "questions": "_shared/questions.shared.json"
+  },
+  "navigator": {
+    "questionId": "sh_navigator",
+    "groups": [
+      {
+        "label": "For an organisation",
+        "options": ["hire_talent", "build_capability", "university"]
+      },
+      {
+        "label": "For myself",
+        "options": ["join_community", "apply_opportunities", "explore_joining"]
+      }
+    ],
+    "trailing": ["something_else"],
+    "branches": {
+      "hire_talent": { "journey": "employer", "entry": "emp_role" },
+      "build_capability": { "journey": "corporate", "entry": "corp_role" },
+      "university": { "journey": "university", "entry": "uni_role" },
+      "join_community": { "journey": "community", "entry": "comm_desc" },
+      "apply_opportunities": { "journey": "candidate", "entry": "cand_desc" },
+      "explore_joining": { "journey": "join", "entry": "join_area" },
+      "something_else": { "journey": "something-else", "entry": "se_note" }
+    }
+  },
+  "journeys": [
+    { "key": "employer", "dir": "employer", "priority": 1 },
+    { "key": "corporate", "dir": "corporate", "priority": 2 },
+    { "key": "university", "dir": "university", "priority": 3 },
+    { "key": "community", "dir": "community", "priority": 5 },
+    { "key": "candidate", "dir": "candidate", "priority": 4 },
+    { "key": "join", "dir": "join", "priority": 6 },
+    { "key": "something-else", "dir": "something-else", "priority": 7 }
+  ],
+  "files": {
+    "journey.json": "Journey identity + metadata (name, icon, theme, routes, type, version, persisted metadata keys).",
+    "questions.json": "Engine FlowBundle subgraph: this journey's question definitions + node chain + branching. Composes shared questions via `uses` and `extends`.",
+    "timeline.json": "Lifecycle timeline_event definitions this journey emits (moat data; backend config, not UI).",
+    "crm.json": "Pipeline, owner team, lead-score inputs, routing rules, tags, lifecycle stage, automation hooks.",
+    "confirmation.json": "Post-submit experience: what-happens-next, timeline preview, CTA, recommended next action, how-heard.",
+    "emails.json": "Internal notification, visitor confirmation, follow-up, reminder — subjects, variables, recipients, delays."
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "purpose": "Community / cohort / fellowship journey — engine FlowBundle subgraph. Individual audience; short and low-friction (~45s).",
+  "uses": [],
+  "flow": {
+    "id": "community",
+    "version": 1,
+    "entry": "comm_desc",
+    "nodes": {
+      "comm_desc":      { "id": "comm_desc",      "kind": "question", "questionId": "comm_desc",      "transitions": [{ "to": "comm_interests" }] },
+      "comm_interests": { "id": "comm_interests", "kind": "question", "questionId": "comm_interests", "transitions": [{ "to": "comm_note" }] },
+      "comm_note":      { "id": "comm_note",      "kind": "question", "questionId": "comm_note",      "transitions": [{ "to": "comm_contact" }] },
+      "comm_contact":   { "id": "comm_contact",   "kind": "question", "questionId": "comm_contact",   "transitions": [{ "to": "comm_done" }] },
+      "comm_done":      { "id": "comm_done",      "kind": "terminal", "outcome": "community" }
+    }
+  },
+  "questions": {
+    "comm_desc": {
+      "id": "comm_desc",
+      "type": "single_choice",
+      "prompt": "{firstName}, what best describes where you are right now?",
+      "optional": false,
+      "options": [
+        { "value": "current_student", "label": "Current student" },
+        { "value": "recent_graduate", "label": "Recent graduate" },
+        { "value": "early_career", "label": "Early-career professional" },
+        { "value": "experienced", "label": "Experienced professional" },
+        { "value": "career_switcher", "label": "Career switcher or returner" },
+        { "value": "something_else", "label": "Something else" }
+      ],
+      "config": { "autoAdvance": true, "persistAs": "journeyStage" }
+    },
+    "comm_interests": {
+      "id": "comm_interests",
+      "type": "multi_choice",
+      "prompt": "What would you like to hear about?",
+      "help": "Choose as many as you like.",
+      "optional": false,
+      "options": [
+        { "value": "next_cohort", "label": "The next Billbeak cohort" },
+        { "value": "fellowships", "label": "Fellowships" },
+        { "value": "workshops_events", "label": "Workshops and events" },
+        { "value": "community", "label": "The Billbeak community" },
+        { "value": "career_programmes", "label": "Career-building programmes" },
+        { "value": "not_sure", "label": "I'm not sure—show me what fits" }
+      ],
+      "validations": [{ "rule": "minSelected", "params": { "value": 1 }, "message": "Pick at least one." }],
+      "config": { "persistAs": "interests" }
+    },
+    "comm_note": {
+      "id": "comm_note",
+      "type": "textarea",
+      "prompt": "Anything you would like us to know?",
+      "optional": true,
+      "validations": [{ "rule": "maxLength", "params": { "value": 600 } }],
+      "config": { "suggestedAnswer": "I'd like to hear about the next relevant cohort, fellowship or community opportunity.", "editableSuggestion": true }
+    },
+    "comm_contact": {
+      "id": "comm_contact",
+      "extends": "sh_contact",
+      "overrides": {
+        "config": {
+          "submitLabel": "Keep me informed",
+          "audience": "individual"
+        }
+      }
+    }
+  }
+}

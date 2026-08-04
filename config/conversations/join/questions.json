@@ -1,0 +1,77 @@
+{
+  "purpose": "Join Billbeak journey — engine FlowBundle subgraph. For people who want to work with the Billbeak team. No cover letter; one or two human sentences.",
+  "uses": [],
+  "flow": {
+    "id": "join",
+    "version": 1,
+    "entry": "join_area",
+    "nodes": {
+      "join_area":    { "id": "join_area",    "kind": "question", "questionId": "join_area",    "transitions": [{ "to": "join_role" }] },
+      "join_role":    { "id": "join_role",    "kind": "question", "questionId": "join_role",    "transitions": [{ "to": "join_why" }] },
+      "join_why":     { "id": "join_why",     "kind": "question", "questionId": "join_why",     "transitions": [{ "to": "join_profile" }] },
+      "join_profile": { "id": "join_profile", "kind": "question", "questionId": "join_profile", "transitions": [{ "to": "join_contact" }] },
+      "join_contact": { "id": "join_contact", "kind": "question", "questionId": "join_contact", "transitions": [{ "to": "join_done" }] },
+      "join_done":    { "id": "join_done",    "kind": "terminal", "outcome": "join" }
+    }
+  },
+  "questions": {
+    "join_area": {
+      "id": "join_area",
+      "type": "single_choice",
+      "prompt": "{firstName}, where could you make Billbeak stronger?",
+      "optional": false,
+      "options": [
+        { "value": "talent_engineering", "label": "Talent Engineering" },
+        { "value": "learning_programmes", "label": "Learning and programmes" },
+        { "value": "partnerships_growth", "label": "Partnerships and growth" },
+        { "value": "product_ai_tech", "label": "Product, AI or technology" },
+        { "value": "marketing_content", "label": "Marketing, content or community" },
+        { "value": "operations", "label": "Operations" },
+        { "value": "open", "label": "I'm open to the right role" }
+      ],
+      "config": { "autoAdvance": true, "persistAs": "interestArea" }
+    },
+    "join_role": {
+      "id": "join_role",
+      "type": "text",
+      "prompt": "What best describes your current role?",
+      "optional": false,
+      "validations": [{ "rule": "minLength", "params": { "value": 2 } }, { "rule": "maxLength", "params": { "value": 160 } }],
+      "config": { "suggestedAnswer": "I work in a role related to the area I selected and would like to explore contributing to Billbeak.", "editableSuggestion": true, "enterToSubmit": true }
+    },
+    "join_why": {
+      "id": "join_why",
+      "type": "textarea",
+      "prompt": "Why Billbeak?",
+      "help": "One or two human sentences are enough — no cover letter needed.",
+      "optional": false,
+      "validations": [{ "rule": "minLength", "params": { "value": 4 } }, { "rule": "maxLength", "params": { "value": 500 } }],
+      "config": { "suggestedAnswer": "I'm interested in the problem Billbeak is solving and would like to explore how I could contribute.", "editableSuggestion": true }
+    },
+    "join_profile": {
+      "id": "join_profile",
+      "type": "group",
+      "prompt": "Show us what you have done.",
+      "help": "Add at least one — you don't need every field.",
+      "optional": false,
+      "config": {
+        "requireAtLeast": { "fields": ["linkedin", "cv"], "count": 1, "message": "Add your LinkedIn or a CV — one is enough." },
+        "fields": [
+          { "name": "linkedin", "type": "url", "label": "LinkedIn profile", "placeholder": "linkedin.com/in/yourname", "required": false, "validators": [{ "rule": "url" }], "persistAs": "linkedin" },
+          { "name": "cv", "type": "file", "label": "Upload CV", "accept": ".pdf,.doc,.docx", "acceptLabel": "PDF, DOC or DOCX", "maxSizeMB": 10, "required": false, "persistAs": "cv" },
+          { "name": "portfolio", "type": "url", "label": "Portfolio, GitHub or work samples", "placeholder": "Paste a link", "required": false, "validators": [{ "rule": "url" }], "persistAs": "portfolio" }
+        ]
+      }
+    },
+    "join_contact": {
+      "id": "join_contact",
+      "extends": "sh_contact",
+      "overrides": {
+        "config": {
+          "submitLabel": "Submit my Billbeak interest",
+          "audience": "individual"
+        }
+      }
+    }
+  }
+}

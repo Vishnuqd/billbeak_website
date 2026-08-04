@@ -1,0 +1,12 @@
+{
+  "purpose": "Timeline (moat) lifecycle for the University journey.",
+  "journeyKey": "university",
+  "lifecycle": ["journey_started", "programme_review", "discovery", "proposal", "launch"],
+  "events": [
+    { "type": "journey_started", "label": "Journey Started", "trigger": "engine:conversation_started", "emitNow": true, "visibility": "private", "verification": "system" },
+    { "type": "programme_review", "label": "Programme Review", "trigger": "engine:conversation_completed", "emitNow": true, "visibility": "private", "verification": "system", "evidence": ["supportAudience", "audienceSize", "curriculumBrief"] },
+    { "type": "discovery", "label": "Discovery", "trigger": "crm:stage=discovery", "emitNow": false, "visibility": "private" },
+    { "type": "proposal", "label": "Proposal", "trigger": "crm:stage=proposal", "emitNow": false, "visibility": "private" },
+    { "type": "launch", "label": "Launch", "trigger": "crm:stage=launch", "emitNow": false, "visibility": "private" }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "purpose": "Email/notification configuration for the Employer journey. Configuration only — no sending logic. Defines internal notification, visitor confirmation, follow-up and reminder with subjects, variables, recipients and delays.",
+  "journeyKey": "employer",
+  "messages": [
+    {
+      "id": "internal_notification",
+      "type": "internal",
+      "recipientRule": "team:talent_engineering",
+      "subject": "New hiring enquiry — {organisationName} ({journeyStage})",
+      "variables": ["firstName", "organisationName", "orgSize", "hiringNeed", "journeyStage", "decisionMaker", "companyUrl", "roleBrief", "leadScore", "preferredContact"],
+      "delayMinutes": 0
+    },
+    {
+      "id": "visitor_confirmation",
+      "type": "visitor",
+      "recipientRule": "visitor:email",
+      "subject": "We've received your hiring enquiry, {firstName}",
+      "variables": ["firstName", "organisationName"],
+      "delayMinutes": 0
+    },
+    {
+      "id": "followup",
+      "type": "visitor",
+      "recipientRule": "visitor:email",
+      "subject": "Next steps with Billbeak Verified Talent",
+      "variables": ["firstName"],
+      "delayMinutes": 1440,
+      "condition": "no_reply"
+    },
+    {
+      "id": "owner_reminder",
+      "type": "internal",
+      "recipientRule": "owner",
+      "subject": "Reminder: hiring enquiry from {organisationName} awaiting first response",
+      "variables": ["organisationName", "leadScore", "journeyStage"],
+      "delayMinutes": 2880,
+      "condition": "unactioned"
+    }
+  ]
+}

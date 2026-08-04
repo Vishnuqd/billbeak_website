@@ -1,0 +1,15 @@
+{
+  "purpose": "Post-submit experience for the University journey.",
+  "journeyKey": "university",
+  "title": "Billbeak Academy has received your enquiry.",
+  "body": "We'll review the student or faculty requirement and contact you about the most relevant next step.",
+  "whatHappensNext": [
+    { "step": 1, "label": "Academy reviews your requirement", "detail": "We review the audience, scale and any brief you shared." },
+    { "step": 2, "label": "A discovery conversation", "detail": "We reach out on your preferred channel to align on outcomes and the academic calendar." },
+    { "step": 3, "label": "A proposal to launch", "detail": "We shape a student-training or faculty-development programme for your institution." }
+  ],
+  "timelinePreview": ["journey_started", "programme_review", "discovery"],
+  "primaryCta": { "label": "Explore University Programmes →", "href": "/academy" },
+  "recommendedNextAction": { "label": "See academy outcomes", "href": "/academy#outcomes" },
+  "howHeard": { "questionId": "sh_how_heard" }
+}

@@ -1,0 +1,949 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Billbeak Let's Talk API",
+    "description": "Generic, configuration-driven backend for the Billbeak 'Let's Talk' experience.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Ready",
+        "operationId": "ready_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/configuration": {
+      "get": {
+        "tags": [
+          "configuration"
+        ],
+        "summary": "Master Configuration",
+        "description": "The whole composed conversation (root + navigator + every journey).",
+        "operationId": "master_configuration_configuration_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MasterConfigurationOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/configuration/{journey_key}": {
+      "get": {
+        "tags": [
+          "configuration"
+        ],
+        "summary": "Journey Configuration",
+        "operationId": "journey_configuration_configuration__journey_key__get",
+        "parameters": [
+          {
+            "name": "journey_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Journey Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys": {
+      "post": {
+        "tags": [
+          "journeys"
+        ],
+        "summary": "Create Journey",
+        "operationId": "create_journey_journeys_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JourneyCreateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JourneyStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journey_id}": {
+      "get": {
+        "tags": [
+          "journeys"
+        ],
+        "summary": "Get Journey",
+        "operationId": "get_journey_journeys__journey_id__get",
+        "parameters": [
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Journey Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JourneyStateOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journey_id}/answers": {
+      "post": {
+        "tags": [
+          "journeys"
+        ],
+        "summary": "Submit Answer",
+        "operationId": "submit_answer_journeys__journey_id__answers_post",
+        "parameters": [
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Journey Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerResultOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journey_id}/uploads": {
+      "post": {
+        "tags": [
+          "journeys"
+        ],
+        "summary": "Upload File",
+        "operationId": "upload_file_journeys__journey_id__uploads_post",
+        "parameters": [
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Journey Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_file_journeys__journey_id__uploads_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journey_id}/complete": {
+      "post": {
+        "tags": [
+          "journeys"
+        ],
+        "summary": "Complete Journey",
+        "operationId": "complete_journey_journeys__journey_id__complete_post",
+        "parameters": [
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Journey Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompleteResultOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys/{journey_id}/timeline": {
+      "get": {
+        "tags": [
+          "journeys"
+        ],
+        "summary": "Get Timeline",
+        "operationId": "get_timeline_journeys__journey_id__timeline_get",
+        "parameters": [
+          {
+            "name": "journey_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Journey Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TimelineEventOut"
+                  },
+                  "title": "Response Get Timeline Journeys  Journey Id  Timeline Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AnswerIn": {
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "title": "Questionid"
+          },
+          "value": {
+            "title": "Value",
+            "description": "Answer value: string, number, array, or group object."
+          }
+        },
+        "type": "object",
+        "required": [
+          "questionId",
+          "value"
+        ],
+        "title": "AnswerIn"
+      },
+      "AnswerResultOut": {
+        "properties": {
+          "journeyId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Journeyid"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "currentNodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currentnodeid"
+          },
+          "currentQuestion": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currentquestion"
+          },
+          "completionPct": {
+            "type": "number",
+            "title": "Completionpct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "journeyId",
+          "status",
+          "currentNodeId",
+          "currentQuestion",
+          "completionPct"
+        ],
+        "title": "AnswerResultOut"
+      },
+      "Body_upload_file_journeys__journey_id__uploads_post": {
+        "properties": {
+          "questionId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Questionid"
+          },
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_file_journeys__journey_id__uploads_post"
+      },
+      "CompleteResultOut": {
+        "properties": {
+          "journeyId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Journeyid"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "outcome": {
+            "type": "string",
+            "title": "Outcome"
+          },
+          "crmEventId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Crmeventid"
+          },
+          "leadScore": {
+            "type": "integer",
+            "title": "Leadscore"
+          },
+          "emailsQueued": {
+            "type": "integer",
+            "title": "Emailsqueued"
+          },
+          "confirmation": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Confirmation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "journeyId",
+          "status",
+          "outcome",
+          "crmEventId",
+          "leadScore",
+          "emailsQueued",
+          "confirmation"
+        ],
+        "title": "CompleteResultOut"
+      },
+      "ConfigurationOut": {
+        "properties": {
+          "journeyKey": {
+            "type": "string",
+            "title": "Journeykey"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "journeyType": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Journeytype"
+          },
+          "flow": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Flow"
+          },
+          "questions": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Questions"
+          },
+          "confirmation": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Confirmation"
+          },
+          "intro": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Intro"
+          }
+        },
+        "type": "object",
+        "required": [
+          "journeyKey",
+          "name",
+          "version",
+          "journeyType",
+          "flow",
+          "questions",
+          "confirmation",
+          "intro"
+        ],
+        "title": "ConfigurationOut"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthOut": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "version"
+        ],
+        "title": "HealthOut"
+      },
+      "JourneyCreateIn": {
+        "properties": {
+          "journeyKey": {
+            "type": "string",
+            "title": "Journeykey",
+            "description": "Journey key, e.g. 'employer'. Discovered from configuration."
+          },
+          "leadSource": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Leadsource",
+            "description": "Attribution source (utm, referrer\u2026)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "journeyKey"
+        ],
+        "title": "JourneyCreateIn"
+      },
+      "JourneyStateOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "journeyKey": {
+            "type": "string",
+            "title": "Journeykey"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "currentNodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currentnodeid"
+          },
+          "currentQuestion": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currentquestion"
+          },
+          "currentStep": {
+            "type": "integer",
+            "title": "Currentstep"
+          },
+          "totalSteps": {
+            "type": "integer",
+            "title": "Totalsteps"
+          },
+          "completionPct": {
+            "type": "number",
+            "title": "Completionpct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "journeyKey",
+          "status",
+          "currentNodeId",
+          "currentQuestion",
+          "currentStep",
+          "totalSteps",
+          "completionPct"
+        ],
+        "title": "JourneyStateOut"
+      },
+      "MasterConfigurationOut": {
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "intro": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Intro"
+          },
+          "navigator": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Navigator"
+          },
+          "flow": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Flow"
+          },
+          "questions": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Questions"
+          },
+          "journeys": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Journeys"
+          }
+        },
+        "type": "object",
+        "required": [
+          "version",
+          "intro",
+          "navigator",
+          "flow",
+          "questions",
+          "journeys"
+        ],
+        "title": "MasterConfigurationOut"
+      },
+      "ReadyOut": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "database": {
+            "type": "string",
+            "title": "Database"
+          },
+          "configuration": {
+            "type": "string",
+            "title": "Configuration"
+          },
+          "journeys": {
+            "type": "integer",
+            "title": "Journeys"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "database",
+          "configuration",
+          "journeys"
+        ],
+        "title": "ReadyOut"
+      },
+      "TimelineEventOut": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Occurredat"
+          },
+          "verificationStatus": {
+            "type": "string",
+            "title": "Verificationstatus"
+          },
+          "visibility": {
+            "type": "string",
+            "title": "Visibility"
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "label",
+          "occurredAt",
+          "verificationStatus",
+          "visibility",
+          "evidence"
+        ],
+        "title": "TimelineEventOut"
+      },
+      "UploadOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "questionId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Questionid"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "contentType": {
+            "type": "string",
+            "title": "Contenttype"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "title": "Sizebytes"
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sha256"
+          },
+          "scanStatus": {
+            "type": "string",
+            "title": "Scanstatus"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "questionId",
+          "filename",
+          "contentType",
+          "sizeBytes",
+          "sha256",
+          "scanStatus",
+          "provider",
+          "url"
+        ],
+        "title": "UploadOut"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

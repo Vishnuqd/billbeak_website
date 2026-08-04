@@ -1,0 +1,37 @@
+{
+  "purpose": "Something Else journey — the graceful fallback. One open question, then contact. Audience is unknown, so the organisation field is optional.",
+  "uses": [],
+  "flow": {
+    "id": "something_else",
+    "version": 1,
+    "entry": "se_note",
+    "nodes": {
+      "se_note":    { "id": "se_note",    "kind": "question", "questionId": "se_note",    "transitions": [{ "to": "se_contact" }] },
+      "se_contact": { "id": "se_contact", "kind": "question", "questionId": "se_contact", "transitions": [{ "to": "se_done" }] },
+      "se_done":    { "id": "se_done",    "kind": "terminal", "outcome": "something_else" }
+    }
+  },
+  "questions": {
+    "se_note": {
+      "id": "se_note",
+      "type": "textarea",
+      "prompt": "{firstName}, tell us what you had in mind.",
+      "optional": false,
+      "validations": [{ "rule": "minLength", "params": { "value": 4 } }, { "rule": "maxLength", "params": { "value": 800 } }],
+      "config": { "suggestedAnswer": "I'd like to speak with Billbeak about something that isn't listed here.", "editableSuggestion": true }
+    },
+    "se_contact": {
+      "id": "se_contact",
+      "extends": "sh_contact",
+      "overrides": {
+        "config": {
+          "submitLabel": "Send my message",
+          "audience": "unknown",
+          "addFields": [
+            { "name": "organisationName", "type": "text", "label": "Organisation (if any)", "required": false, "persistAs": "organisationName" }
+          ]
+        }
+      }
+    }
+  }
+}

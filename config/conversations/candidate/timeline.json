@@ -1,0 +1,14 @@
+{
+  "purpose": "Timeline (moat) lifecycle for the Candidate journey. This is the richest identity path — it seeds the Talent Passport. Each milestone can later carry verification status.",
+  "journeyKey": "candidate",
+  "lifecycle": ["journey_started", "profile_submitted", "talent_engineering_review", "passport_started", "represented", "interview", "opportunity_closed"],
+  "events": [
+    { "type": "journey_started", "label": "Journey Started", "trigger": "engine:conversation_started", "emitNow": true, "visibility": "private", "verification": "system" },
+    { "type": "profile_submitted", "label": "Profile Submitted", "trigger": "engine:conversation_completed", "emitNow": true, "visibility": "private", "verification": "unverified", "evidence": ["linkedin", "cv", "portfolio", "journeyStage"] },
+    { "type": "talent_engineering_review", "label": "Talent Engineering Review", "trigger": "crm:stage=review", "emitNow": false, "visibility": "private" },
+    { "type": "passport_started", "label": "Passport Started", "trigger": "passport:created", "emitNow": false, "visibility": "private", "verification": "pending" },
+    { "type": "represented", "label": "Represented", "trigger": "crm:stage=represented", "emitNow": false, "visibility": "private", "verification": "verified" },
+    { "type": "interview", "label": "Interview", "trigger": "crm:stage=interview", "emitNow": false, "visibility": "private" },
+    { "type": "opportunity_closed", "label": "Opportunity Closed", "trigger": "crm:stage=closed", "emitNow": false, "visibility": "private" }
+  ]
+}

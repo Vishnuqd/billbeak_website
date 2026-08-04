@@ -1,0 +1,19 @@
+{
+  "key": "community",
+  "name": "Join a programme or community",
+  "description": "An individual wants to hear about cohorts, fellowships, workshops or the Billbeak community.",
+  "icon": "users",
+  "theme": { "palette": "billbeak-warm", "accent": "rust" },
+  "priority": 5,
+  "estimatedSeconds": 45,
+  "supportedDevices": ["desktop", "tablet", "mobile"],
+  "entryRoute": "/talk",
+  "entryNode": "comm_desc",
+  "completionRoute": "/talk/complete/community",
+  "journeyType": "individual",
+  "audience": "individual",
+  "version": "1.0.0",
+  "metadata": {
+    "persists": ["journeyType", "journeyStage", "preferredContact", "leadSource", "leadSourceDetail", "version", "createdDate", "updatedDate"]
+  }
+}

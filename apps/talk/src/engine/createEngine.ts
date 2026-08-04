@@ -1,43 +1,44 @@
 /**
- * Engine factory.
- *
- * Constructs a ConversationEngine wired with the app's adapters. This is the ONE
- * place the app injects concrete persistence / analytics / upload / submit
- * behaviour. Everything above this file treats the engine as an opaque store.
+ * Engine factory — builds the engine from the BACKEND configuration and wires
+ * the real adapters. The engine still runs the conversation locally (branching,
+ * validation, instant resume); BackendSync mirrors everything to the API as the
+ * system of record.
  */
 
 import {
   ConversationEngine,
   LocalStoragePersistenceAdapter,
-  type PersistedSession,
 } from "@billbeak/conversation-engine";
-import { getFlow } from "@/config/flows/index.ts";
+import type { LoadedAppConfig } from "@/config/types.ts";
 import { AppAnalyticsAdapter } from "./adapters/analytics.ts";
-import { PlaceholderUploadProvider } from "./adapters/upload.ts";
+import { BackendUploadProvider } from "./adapters/upload.ts";
+import type { BackendSync } from "./backend/sync.ts";
 
-export interface CreateEngineArgs {
-  readonly flowKey?: string;
-  readonly sessionId: string;
-}
-
-export function createEngine({ flowKey, sessionId }: CreateEngineArgs): ConversationEngine {
-  const { flow, questions } = getFlow(flowKey);
-
-  return new ConversationEngine({
-    flow,
-    questions,
+export function createEngine(
+  appConfig: LoadedAppConfig,
+  sessionId: string,
+  sync: BackendSync,
+): ConversationEngine {
+  const engine = new ConversationEngine({
+    flow: appConfig.flow,
+    questions: appConfig.questions,
     sessionId,
+    // Local snapshot for instant refresh/back-forward resume.
     persistence: new LocalStoragePersistenceAdapter("billbeak:talk:session:"),
     analytics: new AppAnalyticsAdapter(),
-    uploads: new PlaceholderUploadProvider(),
-    onSubmit: async (session: PersistedSession) => {
-      // Placeholder. The real app POSTs the completed conversation to the API
-      // (which creates the Lead / opens the Journey). Left intentionally inert
-      // so the shell can be validated without a backend.
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.debug("[submit] conversation completed", session);
-      }
+    // Safety-net provider; components upload directly for progress/cancel.
+    uploads: new BackendUploadProvider(sync),
+    hooks: {
+      onQuestionExit: (questionId) => sync.handleQuestionExit(questionId),
+    },
+    onSubmit: (session) => {
+      // Durable completion happens in the background (offline-tolerant).
+      sync.requestComplete();
+      const node = appConfig.flow.nodes[session.currentNodeId];
+      const outcome = node && node.kind === "terminal" ? node.outcome : undefined;
+      return Promise.resolve(outcome ?? undefined);
     },
   });
+  sync.attach(engine);
+  return engine;
 }

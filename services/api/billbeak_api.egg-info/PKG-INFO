@@ -1,0 +1,20 @@
+Metadata-Version: 2.4
+Name: billbeak-api
+Version: 1.0.0
+Summary: Billbeak Let's Talk backend — a generic, configuration-driven FastAPI service.
+Requires-Python: >=3.13
+Requires-Dist: fastapi>=0.115
+Requires-Dist: uvicorn[standard]>=0.30
+Requires-Dist: sqlalchemy[asyncio]>=2.0
+Requires-Dist: alembic>=1.13
+Requires-Dist: pydantic>=2.9
+Requires-Dist: pydantic-settings>=2.5
+Requires-Dist: asyncpg>=0.29
+Requires-Dist: aiosqlite>=0.20
+Requires-Dist: python-multipart>=0.0.9
+Provides-Extra: test
+Requires-Dist: httpx>=0.27; extra == "test"
+Requires-Dist: pytest>=8.3; extra == "test"
+Requires-Dist: pytest-asyncio>=0.24; extra == "test"
+Provides-Extra: s3
+Requires-Dist: boto3>=1.35; extra == "s3"

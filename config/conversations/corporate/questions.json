@@ -1,0 +1,123 @@
+{
+  "purpose": "Corporate Training journey — engine FlowBundle subgraph. Q5 uses a `group` question (selectable chips above a text area) rather than a bespoke type, keeping the engine generic.",
+  "uses": ["sh_decision_maker"],
+  "flow": {
+    "id": "corporate",
+    "version": 1,
+    "entry": "corp_role",
+    "nodes": {
+      "corp_role":       { "id": "corp_role",       "kind": "question", "questionId": "corp_role",          "transitions": [{ "to": "corp_stage" }] },
+      "corp_stage":      { "id": "corp_stage",      "kind": "question", "questionId": "corp_stage",         "transitions": [{ "to": "corp_decision" }] },
+      "corp_decision":   { "id": "corp_decision",   "kind": "question", "questionId": "sh_decision_maker",  "transitions": [{ "to": "corp_size" }] },
+      "corp_size":       { "id": "corp_size",       "kind": "question", "questionId": "corp_size",          "transitions": [{ "to": "corp_capability" }] },
+      "corp_capability": { "id": "corp_capability", "kind": "question", "questionId": "corp_capability",    "transitions": [{ "to": "corp_org" }] },
+      "corp_org":        { "id": "corp_org",        "kind": "question", "questionId": "corp_org",           "transitions": [{ "to": "corp_brief" }] },
+      "corp_brief":      { "id": "corp_brief",      "kind": "question", "questionId": "corp_brief",         "transitions": [{ "to": "corp_contact" }] },
+      "corp_contact":    { "id": "corp_contact",    "kind": "question", "questionId": "corp_contact",       "transitions": [{ "to": "corp_done" }] },
+      "corp_done":       { "id": "corp_done",       "kind": "terminal", "outcome": "corporate" }
+    }
+  },
+  "questions": {
+    "corp_role": {
+      "id": "corp_role",
+      "type": "text",
+      "prompt": "{firstName}, what best describes you?",
+      "optional": false,
+      "validations": [{ "rule": "minLength", "params": { "value": 2 } }, { "rule": "maxLength", "params": { "value": 160 } }],
+      "config": { "suggestedAnswer": "I lead learning, people or capability development for my organisation.", "editableSuggestion": true, "enterToSubmit": true }
+    },
+    "corp_stage": {
+      "id": "corp_stage",
+      "type": "single_choice",
+      "prompt": "How soon are you looking to act?",
+      "optional": false,
+      "options": [
+        { "value": "exploring", "label": "Just exploring" },
+        { "value": "planning", "label": "Planning ahead" },
+        { "value": "immediate", "label": "Immediate need" }
+      ],
+      "config": { "autoAdvance": true, "improvement": "journey_stage", "persistAs": "journeyStage" }
+    },
+    "corp_size": {
+      "id": "corp_size",
+      "type": "single_choice",
+      "prompt": "How big is your organisation?",
+      "optional": false,
+      "options": [
+        { "value": "lt_10", "label": "Fewer than 10" },
+        { "value": "10_100", "label": "10–100" },
+        { "value": "101_500", "label": "101–500" },
+        { "value": "501_1000", "label": "501–1,000" },
+        { "value": "1000_plus", "label": "1,000+" }
+      ],
+      "config": { "autoAdvance": true, "persistAs": "orgSize" }
+    },
+    "corp_capability": {
+      "id": "corp_capability",
+      "type": "group",
+      "prompt": "What capability are you trying to build?",
+      "help": "Tell us about the team, business challenge or outcome you have in mind.",
+      "optional": false,
+      "config": {
+        "fields": [
+          {
+            "name": "capabilityAreas",
+            "type": "multiselect",
+            "label": "Areas of interest",
+            "display": "chips",
+            "required": false,
+            "options": [
+              { "value": "ai_tools", "label": "Customised AI tools for your organisation's needs" },
+              { "value": "accountability", "label": "Building team's accountability" },
+              { "value": "internal_talent_engineers", "label": "Creating internal Talent Engineers" },
+              { "value": "senior_leadership", "label": "Senior leadership programmes" },
+              { "value": "sales_teams", "label": "Improved sales teams" },
+              { "value": "not_sure", "label": "Not sure yet" }
+            ],
+            "persistAs": "capabilityAreas"
+          },
+          {
+            "name": "capabilityDetail",
+            "type": "longtext",
+            "label": "Tell us more",
+            "required": true,
+            "suggested": "We're exploring a programme for our team and would like Billbeak to help us shape the right format.",
+            "editableSuggestion": true,
+            "persistAs": "capabilityDetail"
+          }
+        ]
+      }
+    },
+    "corp_org": {
+      "id": "corp_org",
+      "type": "group",
+      "prompt": "Which organisation are you with?",
+      "optional": false,
+      "config": {
+        "fields": [
+          { "name": "organisationName", "type": "text", "label": "Organisation name", "required": true, "persistAs": "organisationName" },
+          { "name": "website", "type": "url", "label": "Website", "required": false, "validators": [{ "rule": "url" }], "persistAs": "companyUrl" },
+          { "name": "cityCountry", "type": "text", "label": "Country or city", "required": true, "persistAs": "location" }
+        ]
+      }
+    },
+    "corp_brief": {
+      "id": "corp_brief",
+      "type": "file",
+      "prompt": "Have a programme brief, learning requirement or RFP?",
+      "optional": true,
+      "config": { "uploadLabel": "Upload document", "accept": ".pdf,.doc,.docx", "acceptLabel": "PDF, DOC or DOCX", "maxSizeMB": 10, "persistAs": "programmeBrief" }
+    },
+    "corp_contact": {
+      "id": "corp_contact",
+      "extends": "sh_contact",
+      "overrides": {
+        "config": {
+          "submitLabel": "Discuss a corporate programme",
+          "audience": "organisation",
+          "addFields": ["sharedFieldSets.organisationName", "sharedFieldSets.previousRelationship"]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "purpose": "Timeline (moat) lifecycle for the Join Billbeak journey (internal hiring interest).",
+  "journeyKey": "join",
+  "lifecycle": ["journey_started", "interest_submitted", "team_review", "conversation", "opportunity_closed"],
+  "events": [
+    { "type": "journey_started", "label": "Journey Started", "trigger": "engine:conversation_started", "emitNow": true, "visibility": "private", "verification": "system" },
+    { "type": "interest_submitted", "label": "Interest Submitted", "trigger": "engine:conversation_completed", "emitNow": true, "visibility": "private", "verification": "system", "evidence": ["interestArea", "linkedin", "cv", "portfolio"] },
+    { "type": "team_review", "label": "Team Review", "trigger": "crm:stage=review", "emitNow": false, "visibility": "private" },
+    { "type": "conversation", "label": "Conversation", "trigger": "crm:stage=conversation", "emitNow": false, "visibility": "private" },
+    { "type": "opportunity_closed", "label": "Opportunity Closed", "trigger": "crm:stage=closed", "emitNow": false, "visibility": "private" }
+  ]
+}

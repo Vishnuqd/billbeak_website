@@ -1,0 +1,20 @@
+{
+  "purpose": "Timeline (moat) lifecycle for the Employer journey. Each event is a curated, human-meaningful milestone (distinct from analytics telemetry). `emitNow` events fire from the current engine/app; the rest are emitted later by the backend/CRM.",
+  "journeyKey": "employer",
+  "lifecycle": [
+    "journey_started",
+    "hiring_enquiry_submitted",
+    "discovery_scheduled",
+    "requirements_reviewed",
+    "candidates_introduced",
+    "journey_closed"
+  ],
+  "events": [
+    { "type": "journey_started", "label": "Journey Started", "trigger": "engine:conversation_started", "emitNow": true, "visibility": "private", "verification": "system" },
+    { "type": "hiring_enquiry_submitted", "label": "Hiring Enquiry Submitted", "trigger": "engine:conversation_completed", "emitNow": true, "visibility": "private", "verification": "system", "evidence": ["journeyStage", "orgSize", "hiringNeed", "roleBrief"] },
+    { "type": "discovery_scheduled", "label": "Discovery Scheduled", "trigger": "crm:stage=discovery", "emitNow": false, "visibility": "private" },
+    { "type": "requirements_reviewed", "label": "Requirements Reviewed", "trigger": "crm:stage=requirements", "emitNow": false, "visibility": "private" },
+    { "type": "candidates_introduced", "label": "Candidates Introduced", "trigger": "crm:stage=introductions", "emitNow": false, "visibility": "private" },
+    { "type": "journey_closed", "label": "Journey Closed", "trigger": "crm:stage=closed", "emitNow": false, "visibility": "private" }
+  ]
+}

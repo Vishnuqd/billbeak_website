@@ -1,0 +1,19 @@
+{
+  "key": "join",
+  "name": "Explore joining Billbeak",
+  "description": "Someone interested in working with the Billbeak team.",
+  "icon": "sparkles",
+  "theme": { "palette": "billbeak-warm", "accent": "rust" },
+  "priority": 6,
+  "estimatedSeconds": 55,
+  "supportedDevices": ["desktop", "tablet", "mobile"],
+  "entryRoute": "/talk",
+  "entryNode": "join_area",
+  "completionRoute": "/talk/complete/join",
+  "journeyType": "internal",
+  "audience": "individual",
+  "version": "1.0.0",
+  "metadata": {
+    "persists": ["journeyType", "preferredContact", "leadSource", "leadSourceDetail", "version", "createdDate", "updatedDate"]
+  }
+}

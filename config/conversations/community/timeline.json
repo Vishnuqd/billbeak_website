@@ -1,0 +1,11 @@
+{
+  "purpose": "Timeline (moat) lifecycle for the Community journey. A community sign-up is the top of the individual identity graph — the first milestone toward a future Talent Passport.",
+  "journeyKey": "community",
+  "lifecycle": ["journey_started", "community_interest_registered", "joined_community", "cohort_participation"],
+  "events": [
+    { "type": "journey_started", "label": "Journey Started", "trigger": "engine:conversation_started", "emitNow": true, "visibility": "private", "verification": "system" },
+    { "type": "community_interest_registered", "label": "Community Interest Registered", "trigger": "engine:conversation_completed", "emitNow": true, "visibility": "private", "verification": "system", "evidence": ["interests", "journeyStage"] },
+    { "type": "joined_community", "label": "Joined the Billbeak Community", "trigger": "crm:stage=member", "emitNow": false, "visibility": "community" },
+    { "type": "cohort_participation", "label": "Cohort / Fellowship Participation", "trigger": "crm:stage=participating", "emitNow": false, "visibility": "community" }
+  ]
+}

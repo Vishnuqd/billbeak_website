@@ -1,0 +1,15 @@
+{
+  "purpose": "Post-submit experience for the Something Else fallback journey.",
+  "journeyKey": "something-else",
+  "title": "Your message is on its way to the right person.",
+  "body": "We'll read what you shared and make sure it reaches the right Billbeak team, then continue using the contact details you provided.",
+  "whatHappensNext": [
+    { "step": 1, "label": "We read your message", "detail": "Someone reviews what you're looking for." },
+    { "step": 2, "label": "We route it", "detail": "We direct it to the team best placed to help." },
+    { "step": 3, "label": "We reply", "detail": "We get back to you on your preferred channel." }
+  ],
+  "timelinePreview": ["journey_started", "message_submitted", "triaged"],
+  "primaryCta": { "label": "Explore Billbeak →", "href": "/" },
+  "recommendedNextAction": { "label": "See what Billbeak does", "href": "/#what-we-do" },
+  "howHeard": { "questionId": "sh_how_heard" }
+}

@@ -1,0 +1,31 @@
+{
+  "purpose": "Email/notification configuration for the Something Else fallback journey.",
+  "journeyKey": "something-else",
+  "messages": [
+    {
+      "id": "internal_notification",
+      "type": "internal",
+      "recipientRule": "team:front_desk",
+      "subject": "New general enquiry — {firstName}",
+      "variables": ["firstName", "message", "organisationName", "preferredContact"],
+      "delayMinutes": 0
+    },
+    {
+      "id": "visitor_confirmation",
+      "type": "visitor",
+      "recipientRule": "visitor:email",
+      "subject": "We've got your message, {firstName}",
+      "variables": ["firstName"],
+      "delayMinutes": 0
+    },
+    {
+      "id": "owner_reminder",
+      "type": "internal",
+      "recipientRule": "owner",
+      "subject": "Reminder: general enquiry from {firstName} awaiting triage",
+      "variables": ["firstName"],
+      "delayMinutes": 1440,
+      "condition": "unactioned"
+    }
+  ]
+}

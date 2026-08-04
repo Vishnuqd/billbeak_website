@@ -1,0 +1,15 @@
+{
+  "purpose": "Post-submit experience for the Join Billbeak journey.",
+  "journeyKey": "join",
+  "title": "Thanks for raising your hand.",
+  "body": "We'll review your profile against current and future opportunities within Billbeak.",
+  "whatHappensNext": [
+    { "step": 1, "label": "We review your interest", "detail": "We look at where you'd like to contribute and your background." },
+    { "step": 2, "label": "The right person reaches out", "detail": "If there's a fit now or soon, the area lead gets in touch." },
+    { "step": 3, "label": "A conversation", "detail": "We talk about how you could contribute to Billbeak." }
+  ],
+  "timelinePreview": ["journey_started", "interest_submitted", "team_review"],
+  "primaryCta": { "label": "Meet Billbeak →", "href": "/about" },
+  "recommendedNextAction": { "label": "See how Billbeak works", "href": "/about#how-we-work" },
+  "howHeard": { "questionId": "sh_how_heard" }
+}

@@ -1,0 +1,19 @@
+{
+  "key": "candidate",
+  "name": "Apply for opportunities",
+  "description": "An individual wants to be considered for jobs represented through Billbeak. Representation is selective — not guaranteed.",
+  "icon": "user-check",
+  "theme": { "palette": "billbeak-warm", "accent": "rust" },
+  "priority": 4,
+  "estimatedSeconds": 60,
+  "supportedDevices": ["desktop", "tablet", "mobile"],
+  "entryRoute": "/talk",
+  "entryNode": "cand_desc",
+  "completionRoute": "/talk/complete/candidate",
+  "journeyType": "individual",
+  "audience": "individual",
+  "version": "1.0.0",
+  "metadata": {
+    "persists": ["journeyType", "journeyStage", "preferredContact", "leadSource", "leadSourceDetail", "version", "createdDate", "updatedDate"]
+  }
+}
