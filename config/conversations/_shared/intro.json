@@ -3,13 +3,9 @@
   "purpose": "The opening/welcome screen shown before the first question. Rendered by the app as a pre-flow screen (see README → Extension Points: welcome screen). Copy is verbatim from the specification.",
   "headline": "Let's find the right next step.",
   "supportingCopy": [
-    "Whether you are hiring, building capability, preparing students or exploring your own next move, tell us what brought you here.",
-    "We'll make sure your enquiry reaches the right Billbeak team."
+    "Whether you are hiring, building capability, preparing students or exploring your own next move, tell us what brought you here."
   ],
   "reassurances": [
-    "One question at a time",
-    "Only relevant questions",
-    "About 60 seconds"
   ],
   "cta": { "label": "Let's begin →", "action": "start" },
   "privacy": "Your information will only be used to respond to your enquiry."
