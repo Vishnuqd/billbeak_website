@@ -12177,12 +12177,41 @@ input.footer-15__form-input:focus {
 }
 
 /* Talent page — header sit higher; portrait clear of logo */
-.bb-talent-page .at-header-spacing--compact {
+.bb-talent-page .at-header-spacing--compact,
+.bb-faculty-page .at-header-spacing--compact {
   padding: 2px 0 6px;
 }
-.bb-talent-page .header-transparent {
+.bb-talent-page .header-transparent,
+.bb-faculty-page .header-transparent {
   top: 0;
 }
+
+/* Faculty page — seamless light hero under transparent header */
+.bb-faculty-hero.sec-1-services {
+  padding-top: 0;
+}
+.bb-faculty-hero .container {
+  padding-top: 128px;
+  padding-bottom: 40px;
+}
+.bb-faculty-hero__copy {
+  padding-top: 8px;
+}
+.bb-faculty-hero__media {
+  margin-top: 0;
+}
+.bb-faculty-hero__media img {
+  max-height: min(72vh, 640px);
+  width: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+@media (max-width: 991.98px) {
+  .bb-faculty-hero .container {
+    padding-top: 112px;
+  }
+}
+
 .bb-talent-hero {
   padding-top: 88px;
 }
