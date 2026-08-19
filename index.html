@@ -23,6 +23,48 @@
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        /* Hero: crowd banner + parallax man (index). Tune the values marked "nudge". */
+        .at-hero-area .at-hero-bg {
+            position: absolute; inset: 0;
+            transform: none;   /* kill template's translateY(50px) that left a dark gap at the top */
+            overflow: hidden;
+        }
+        .at-hero-banner {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; object-position: center 45%;
+            will-change: transform;
+            transition: transform .35s cubic-bezier(.22, 1, .36, 1);
+        }
+        .at-hero-man {
+            position: absolute;
+            left: 50%;        /* nudge: horizontal position of the man */
+            bottom: -3%;      /* nudge: raise/lower so his feet meet the walkway */
+            height: 82%;      /* nudge: overall size of the man */
+            width: auto; max-width: none;
+            transform: translateX(-50%);
+            transform-origin: 50% 100%;
+            will-change: transform;
+            transition: transform .25s cubic-bezier(.22, 1, .36, 1);
+            pointer-events: none;
+        }
+        /* Fit hero + marquee in one viewport (no scroll) at any zoom, instead of the fixed 395px top padding */
+        .at-hero-area.hero-dark-blue.at-hero-spacing {
+            box-sizing: border-box;
+            min-height: 100vh;
+            min-height: 100svh;
+            padding-top: 40px;    /* leaves the open top space where the "Let's Talk" badge lives */
+            padding-bottom: 84px; /* clears the 44px marquee + a gap */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* anchor content above the marquee, not centered */
+        }
+        @media (max-width: 991px) {
+            .at-hero-man { height: 64%; }
+            /* let it grow/scroll on small screens where content is tall */
+            .at-hero-area.hero-dark-blue.at-hero-spacing { min-height: 0; padding-top: 250px; }
+        }
+    </style>
 </head>
 
 <body class="at-magic-cursor">
@@ -432,18 +474,10 @@
             <main class="bg-neutral-0">
                 <!-- prettier-ignore -->
                 <!-- at-hero-area-start -->
-                <div class="at-hero-area hero-dark-blue scene p-relative z-index-1 bg-position fix at-hero-spacing" data-bg-color="#EA440C">
-                    <div class="at-hero-bg at_fade_anim" data-speed=".8" data-delay=".4" data-fade-from="bottom" data-ease="bounce">
-                        <img class="layer" data-depth="0.8" src="assets/custom/main-hero-image.png" alt="Billbeak — talent for the new era">
-                    </div>
-                    <div class="at-hero-fx" aria-hidden="true">
-                        <canvas class="at-hero-fx__canvas"></canvas>
-                        <div class="at-hero-fx__light"></div>
-                        <div class="at-hero-fx__keywords">
-                            <span class="at-hero-fx__word-label">The journey</span>
-                            <span class="at-hero-fx__word">Discover</span>
-                        </div>
-                        <div class="at-hero-fx__grain"></div>
+                <div class="at-hero-area hero-dark-blue scene p-relative z-index-1 bg-position fix at-hero-spacing" data-bg-color="#0e1620">
+                    <div class="at-hero-bg">
+                        <img class="at-hero-banner" src="assets/custom/banner.png" alt="A busy street full of blurred commuters">
+                        <img class="at-hero-man" src="assets/custom/man.png" alt="One person standing still and in focus amid the crowd">
                     </div>
                     <div class="container p-relative">
                         <div class="p-absolute bottom-100 end-0 me-5 mb-100 d-none d-lg-block">
@@ -2454,6 +2488,32 @@
     <script src="assets/js/vendors/jquery.elevatezoom.js"></script>
     <script src="assets/js/vendors/nice-select.js"></script>
     <script src="assets/js/vendors/parallax.js"></script>
+    <script>
+        // Hero: drift the (separate, transparent) man on cursor move; subtle opposite drift on the
+        // crowd gives depth. Window-level listener so the smooth-scroll wrapper can't swallow it.
+        (function () {
+            var hero = document.querySelector('.at-hero-area');
+            var man = document.querySelector('.at-hero-man');
+            var banner = document.querySelector('.at-hero-banner');
+            if (!hero || !man) return;
+            var MAN_X = 44, MAN_Y = 28;   // px the man drifts — increase for more movement
+            var BG_X = 16, BG_Y = 10;     // px the crowd counter-drifts (depth)
+            // Pre-scale the crowd a touch so its counter-drift never reveals an edge.
+            if (banner) banner.style.transform = 'scale(1.06)';
+            function reset() {
+                man.style.transform = 'translateX(-50%)';
+                if (banner) banner.style.transform = 'scale(1.06)';
+            }
+            window.addEventListener('mousemove', function (e) {
+                var r = hero.getBoundingClientRect();
+                if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) { reset(); return; }
+                var dx = (e.clientX - r.left) / r.width - 0.5;
+                var dy = (e.clientY - r.top) / r.height - 0.5;
+                man.style.transform = 'translateX(-50%) translate(' + (dx * MAN_X).toFixed(1) + 'px, ' + (dy * MAN_Y).toFixed(1) + 'px)';
+                if (banner) banner.style.transform = 'scale(1.06) translate(' + (dx * -BG_X).toFixed(1) + 'px, ' + (dy * -BG_Y).toFixed(1) + 'px)';
+            }, { passive: true });
+        })();
+    </script>
     <script src="assets/js/vendors/ripple-2.js"></script>
     <script src="assets/js/vendors/imagesloaded-pkgd.js"></script>
     <script src="assets/js/vendors/isotope.pkgd.min.js"></script>
